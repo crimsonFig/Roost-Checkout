@@ -1,0 +1,28 @@
+# Java Files/Folders
+bin/
+out/
+.classpath
+dictionary.txt
+
+# user specific files or folders
+*.eml
+*.iml
+.project
+.idea/
+.settings/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package Files
+*.jar
