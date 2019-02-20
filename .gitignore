@@ -1,15 +1,24 @@
-# Java Files/Folders
-bin/
-out/
-.classpath
-dictionary.txt
-
-# user specific files or folders
+# user environment specific files or folders
 *.eml
 *.iml
 .project
 .idea/
 .settings/
+.metadata
+out/
+target/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.classpath
+.loadpath
+.recommenders
+dictionary.txt
 
 # Maven
 target/
