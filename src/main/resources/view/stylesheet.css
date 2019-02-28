@@ -1,0 +1,182 @@
+
+.root{
+  -fx-background-color: linear-gradient(to top, #193f7c, #13386d, #0f315d, #0d2a4f, #0c2340);	
+}
+
+.menu-bar{
+  -fx-background-color: linear-gradient(to top, #f8b266, #f8ab53, #f7a340, #f69c29, #f59400);
+  -fx-border-color:  #f0a14d;
+}
+
+.menu-item {
+    -fx-background-color: #f8b266;
+    -fx-text-fill: #FFFFFF;
+}
+
+.menu:hover{-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e)}
+
+.menu-item:hover{-fx-background-color: #edc987;}
+
+.menu:showing { -fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e)}
+
+.context-menu {
+    -fx-background-color: #f8b266; 
+}
+
+.label{
+	-fx-text-fill: #FFFFFF;
+}
+
+.button {
+  -fx-display: inline-block;
+  
+  -fx-text-fill: #FFFFFF;
+  -fx-text-align: center;
+  -fx-text-decoration: none;
+  -fx-outline: none;
+  -fx-color: #fff;
+  -fx-background-color: linear-gradient(to top, #f8b266, #f8ab53, #f7a340, #f69c29, #f59400);
+  -fx-border: none;
+}
+
+.button:hover {-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e)}
+.button:focused{-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e)}
+
+.button:active {
+  -fx-background-color: #3e8e41;
+}
+
+.table-view{
+   -fx-background-color: transparent;
+}
+
+.table-view:focused{
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to top, #f8b266, #f8ab53, #f7a340, #f69c29, #f59400);
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header:hover {
+    -fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e);
+}
+
+.table-view .table-cell{
+    -fx-text-fill: white;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #616161;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; 
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+    
+    }
+
+.text-field {
+    -fx-background-color: #f8ab53, white, #edc987;
+}
+
+.text-field:focused {
+    -fx-background-color: #edc987, white, #f2d7a0;
+}
+
+.combo-box > * {
+	-fx-background-color: #edc987;
+	-fx-background: #edc987;	
+}
+
+.combo-box-base > *{
+	-fx-background-color: #edc987;
+	-fx-background: #edc987;	
+	
+}
+
+.combo-box .list-cell 
+{
+    -fx-background: #edc987;
+    -fx-background-color: #edc987;
+    -fx-text-fill: #FFFFFF;
+    -fx-padding: 3 0 2 7;
+    -fx-cell-size: 1.66667em; 
+    -fx-border-radius: 5 0 0 5;
+  	-fx-background-radius: 5 0 0 5;
+
+  /* top-left, top-right, bottom-right, and bottom-left corners, in that order. */
+}
+
+.combo-box-popup .list-view 
+{
+    -fx-background-color: #edc987, #edc987;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}    
+
+.combo-box-popup .list-view .list-cell 
+{
+    -fx-padding: 4 0 4 5;
+
+    /* No alternate highlighting */
+    -fx-background-color: #edc987;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover 
+{
+    -fx-background: -fx-accent;
+    -fx-background-color: #f2d7a0;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover 
+{
+    -fx-background-color: #f2d7a0;
+}
+
+.combo-box-base  
+{
+    -fx-background-color: #edc987;
+    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-padding: 0;
+}
+
+.combo-box-base:hover
+{
+    -fx-color: -fx-hover-base;
+}
+
+.combo-box-base:showing 
+{
+    -fx-color: -fx-pressed-base;
+}
+
+.combo-box-base:focused {
+    -fx-background-color: #f2d7a0, #f8ab53, #f8ab53, #f8ab53;
+    -fx-background-radius: 6.4, 4, 5, 3;
+    -fx-background-insets: -1.4, 0, 1, 2;
+}
+
+.combo-box:focused{
+	    -fx-background-color: #f2d7a0, #f2d7a0, #f2d7a0, #f2d7a0;
+	
+	
+}
+
+
+.combo-box-base:disabled {
+    -fx-opacity: .4;
+}
