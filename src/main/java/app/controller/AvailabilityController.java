@@ -64,11 +64,12 @@ public class AvailabilityController implements Controller {
         ObservableList<Equipment> smash = new ObservableListWrapper<>(mockSmash);
         EquipmentNameWatcher smashW = new EquipmentNameWatcher(smash, "Smash Bro.");
 
+        tvStationsAvailability.getItems().addAll(poolW, tvW, ttW);
+        tvEquipAvailability.getItems().addAll(smashW);
         initStationTable();
         initEquipmentTable();
 
-        tvStationsAvailability.getItems().addAll(poolW, tvW, ttW);
-        tvEquipAvailability.getItems().addAll(smashW);
+        
     }
 
     /**

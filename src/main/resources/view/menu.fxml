@@ -58,7 +58,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Inventory">
               <items>
-                <MenuItem mnemonicParsing="false" text="About" />
+                <MenuItem mnemonicParsing="false" text="Add" />
               </items>
             </Menu>
           </menus>

@@ -35,7 +35,7 @@ public class StationNameWatcher {
      */
     public StationNameWatcher(ObservableList<Station> stations, String stationName) throws IllegalArgumentException {
         this.stations = stations;
-        this.stations.forEach(this::addWeakStationListener);
+        //this.stations.forEach(this::addWeakStationListener);
         this.stationName = new SimpleStringProperty(this, "stationName", stationName);
         this.formattedAmount = new SimpleStringProperty(this, "formattedAmount", createFormattedAmount());
     }

@@ -13,7 +13,8 @@ public class ActionButtonsTableCell<S> extends TableCell<S, HBox> {
 
     private ActionButtonsTableCell(List<Button> buttons) {
         this.getStyleClass().add("ActionButtonsTableCell");
-        this.boxOfButtons = new HBox((Button[]) buttons.toArray());
+        this.boxOfButtons = new HBox();
+        this.boxOfButtons.getChildren().addAll(buttons);
     }
 
     public static <S> Callback<TableColumn<S, HBox>, TableCell<S, HBox>> cellCallback(List<Button> buttons) {

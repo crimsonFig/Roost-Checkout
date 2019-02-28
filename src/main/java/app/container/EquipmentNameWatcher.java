@@ -35,7 +35,7 @@ public class EquipmentNameWatcher {
      */
     public EquipmentNameWatcher(ObservableList<Equipment> equipments, String equipmentName) throws IllegalArgumentException {
         this.equipments = equipments;
-        this.equipments.forEach(this::addWeakStationListener);
+        //this.equipments.forEach(this::addWeakStationListener);
         this.equipmentName = new SimpleStringProperty(this, "equipmentName", equipmentName);
         this.formattedAmount = new SimpleStringProperty(this, "formattedAmount", createFormattedAmount());
     }

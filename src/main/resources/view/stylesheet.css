@@ -39,7 +39,10 @@
   -fx-border: none;
 }
 
-.button:hover {-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e)}
+.button:hover {
+	-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e);
+	-fx-text-align: center;
+}
 .button:focused{-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e)}
 
 .button:active {
@@ -53,6 +56,8 @@
 .table-view:focused{
     -fx-background-color: transparent;
 }
+
+
 
 .table-view .column-header-background{
     -fx-background-color: linear-gradient(to top, #f8b266, #f8ab53, #f7a340, #f69c29, #f59400);
@@ -87,6 +92,27 @@
     -fx-padding: 0.0em;
     
     }
+    
+.table-view .scroll-bar{
+	-fx-background-color: #f2d7a0;
+	-fx-border-color:#f4b872;	
+}
+    
+.table-view .scroll-bar:vertical{
+	-fx-background-color: #f2d7a0;
+	-fx-border-color:#f4b872;	
+}
+
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb{
+	-fx-background-color: #f2b14e;
+	-fx-border-color:#f2d18f;	
+}
+
+ .corner{
+	-fx-background-color: #f2d18f;	
+}
+
 
 .text-field {
     -fx-background-color: #f8ab53, white, #edc987;
