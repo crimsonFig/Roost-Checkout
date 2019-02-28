@@ -75,7 +75,7 @@ public class Equipment {
 
     // ******************************* method factories ******************************
 
-    public Equipment equipmentFactory(String equipmentName) {
+    public static Equipment equipmentFactory(String equipmentName) {
         return EquipmentFactory.initFactory(new Equipment(equipmentName));
     }
 

@@ -33,7 +33,7 @@ public class StationNameWatcher {
      * @throws IllegalArgumentException
      *         if a station in `stations` has a mismatching station name to the watcher
      */
-    StationNameWatcher(ObservableList<Station> stations, String stationName) throws IllegalArgumentException {
+    public StationNameWatcher(ObservableList<Station> stations, String stationName) throws IllegalArgumentException {
         this.stations = stations;
         this.stations.forEach(this::addWeakStationListener);
         this.stationName = new SimpleStringProperty(this, "stationName", stationName);

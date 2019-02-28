@@ -75,7 +75,7 @@ public class Station {
 
     // ******************************* method factories ******************************
 
-    public Station stationFactory(String stationName) {
+    public static Station stationFactory(String stationName) {
         return StationFactory.initStation(new Station(stationName));
     }
 }
