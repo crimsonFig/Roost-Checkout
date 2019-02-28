@@ -1,11 +1,8 @@
 package app.controller;
 
 import app.container.EquipmentNameWatcher;
-import app.container.StationKindWatcher;
-import app.model.Equipment;
-import app.model.Station;
+import app.container.StationNameWatcher;
 import app.util.control.ActionButtonsTableCell;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -21,10 +18,10 @@ public class AvailabilityController {
     @FXML private VBox      rootNode;
     @FXML private ImageView ivLogo;
 
-    @FXML private TableView<StationKindWatcher>           tvStationsAvailability;
-    @FXML private TableColumn<StationKindWatcher, String> tcStationName;
-    @FXML private TableColumn<StationKindWatcher, String> tcStationAmount;
-    @FXML private TableColumn<StationKindWatcher, HBox>   tcStationAvailability;
+    @FXML private TableView<StationNameWatcher>           tvStationsAvailability;
+    @FXML private TableColumn<StationNameWatcher, String> tcStationName;
+    @FXML private TableColumn<StationNameWatcher, String> tcStationAmount;
+    @FXML private TableColumn<StationNameWatcher, HBox>   tcStationAvailability;
 
     @FXML private TableView<EquipmentNameWatcher>           tvEquipAvailability;
     @FXML private TableColumn<EquipmentNameWatcher, String> tcEquipName;
@@ -37,23 +34,36 @@ public class AvailabilityController {
         initEquipmentTable();
     }
 
+    /**
+     * initialize the table for the the stations.
+     */
     private void initStationTable() {
-        tcStationName.setCellValueFactory(e -> e.getValue().stationKindProperty());
+        // set the table columns to have their value reflect the given properties. will auto update on value changes.
+        tcStationName.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcStationAmount.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
 
+        // add a button to the third column
         Button stationAvailabilityButton = new Button();
-        //TODO: describe button design, set button functionality
+
+        //todo: need to have button update it's icon based on availability change
+        //todo: button should open up a stationWaitListView tray
 
         List<Button> buttons = Collections.singletonList(stationAvailabilityButton);
         tcStationAvailability.setCellFactory(ActionButtonsTableCell.cellCallback(buttons));
     }
 
+    /**
+     * initialize the table for the equipments.
+     */
     private void initEquipmentTable() {
+        // set the table columns to have their value reflect the given properties. will auto update on value changes.
         tcEquipName.setCellValueFactory(e -> e.getValue().equipmentNameProperty());
         tcEquipAmount.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
 
         Button equipmentAvailabilityButton = new Button();
-        //TODO: describe button design, set button functionality
+
+        //todo: need to have button update it's icon based on availability change
+        //todo: button should not do anything. Only a visual indicator.
 
         List<Button> buttons = Collections.singletonList(equipmentAvailabilityButton);
         tcEquipAvailability.setCellFactory(ActionButtonsTableCell.cellCallback(buttons));

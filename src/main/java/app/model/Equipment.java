@@ -1,30 +1,51 @@
 package app.model;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
+/**
+ * an equipment model. utilizes `Property` classes to help alert other objects of value changes.
+ * an equipment represents an object that can be supplied and equipped with a given station
+ * an equipment can belong to a group to represent a generic kind.
+ * these properties are made in mind with an inventory system for classification being easier to manage.
+ */
 public class Equipment {
-    private StringProperty equipmentKind;
-    private StringProperty equipmentName;
+    // the group the equipment belongs to. e.g. "video game", "board game", "pool equipment"
+    private StringProperty  equipmentGroup;
+    // the name of the equipment. e.g. "smash bro", "candy land"
+    private StringProperty  equipmentName;
+    // the availability of the station
     private BooleanProperty available;
 
-    public Equipment(String equipmentKind, String equipmentName) {
-        this.equipmentKind = new SimpleStringProperty(this, "equipmentKind", equipmentKind);
+    // **************************** constructors ************************************
+
+    private Equipment(String equipmentName) {
+        this.equipmentGroup = new SimpleStringProperty(this, "equipmentGroup", null);
         this.equipmentName = new SimpleStringProperty(this, "equipmentName", equipmentName);
+        this.available = new SimpleBooleanProperty(this, "available", Boolean.TRUE);
     }
 
-    public String getEquipmentKind() {
-        return equipmentKind.get();
+    private Equipment(String equipmentGroup, String equipmentName, Boolean available) {
+        this.equipmentGroup = new SimpleStringProperty(this, "equipmentGroup", equipmentGroup);
+        this.equipmentName = new SimpleStringProperty(this, "equipmentName", equipmentName);
+        this.available = new SimpleBooleanProperty(this, "available", available);
     }
 
-    public StringProperty equipmentKindProperty() {
-        return equipmentKind;
+    // **************************** getters, setters *********************************
+    ////// equipment group property
+
+    public String getEquipmentGroup() {
+        return equipmentGroup.get();
     }
 
-    public void setEquipmentKind(String equipmentKind) {
-        this.equipmentKind.set(equipmentKind);
+    public StringProperty equipmentGroupProperty() {
+        return equipmentGroup;
     }
+
+    public void setEquipmentGroup(String equipmentGroup) {
+        this.equipmentGroup.set(equipmentGroup);
+    }
+
+    ////// equipment name property
 
     public String getEquipmentName() {
         return equipmentName.get();
@@ -38,6 +59,8 @@ public class Equipment {
         this.equipmentName.set(equipmentName);
     }
 
+    ////// available property
+
     public boolean isAvailable() {
         return available.get();
     }
@@ -49,4 +72,11 @@ public class Equipment {
     public void setAvailable(boolean available) {
         this.available.set(available);
     }
+
+    // ******************************* method factories ******************************
+
+    public Equipment equipmentFactory(String equipmentName) {
+        return EquipmentFactory.initFactory(new Equipment(equipmentName));
+    }
+
 }

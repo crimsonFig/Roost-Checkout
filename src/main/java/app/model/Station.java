@@ -3,50 +3,79 @@ package app.model;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
+/**
+ * a station model. utilizes `Property` classes in order to allow other objects to listen for value changes.
+ * a station represents a workable station that can be used during a checkout request.
+ * a station may also have equipment groups to distinguish the particular equipment that can be associated in a request.
+ */
 public class Station {
-    private StringProperty stationKind;
-    private ListProperty<StringProperty> equipmentKinds;
-    private BooleanProperty available;
+    // the name of the station. e.g. "pool table", "tv", "table tennis"
+    private StringProperty               stationName;
+    // the list of equipment groups that can be equipped by this station. e.g. "pool", "video game"
+    private ListProperty<StringProperty> equipmentGroups;
+    // the availability of the station
+    private BooleanProperty              available;
 
-    public Station(String stationKind, ListProperty<StringProperty> equipmentKinds, Boolean available) {
-        this.stationKind = new SimpleStringProperty(this, "stationKind", stationKind);
-        this.equipmentKinds = new SimpleListProperty<>(this, "equipmentKinds", equipmentKinds);
+    // **************************** constructors ************************************
+
+    private Station(String stationKind) {
+        this.stationName = new SimpleStringProperty(this, "stationName", stationKind);
+        this.equipmentGroups = new SimpleListProperty<>(this, "equipmentGroups", null);
+        this.available = new SimpleBooleanProperty(this, "available", Boolean.TRUE);
+    }
+
+    private Station(String stationKind, ListProperty<StringProperty> equipmentKinds, Boolean available) {
+        this.stationName = new SimpleStringProperty(this, "stationName", stationKind);
+        this.equipmentGroups = new SimpleListProperty<>(this, "equipmentGroups", equipmentKinds);
         this.available = new SimpleBooleanProperty(this, "available", available);
     }
 
-    public StringProperty stationKindProperty() {
-        return stationKind;
+    // **************************** getters, setters *********************************
+    ////// station name property
+
+    public StringProperty stationNameProperty() {
+        return stationName;
     }
 
-    public String getStationKind() {
-        return stationKind.get();
+    public String getStationName() {
+        return stationName.get();
     }
 
-    public void setStationKind(String stationKind) {
-        this.stationKind.set(stationKind);
+    public void setStationName(String stationName) {
+        this.stationName.set(stationName);
     }
 
-    public ListProperty<StringProperty> equipmentKindsProperty() {
-        return equipmentKinds;
+    ////// equipment groups property
+
+    public ListProperty<StringProperty> equipmentGroupsProperty() {
+        return equipmentGroups;
     }
 
-    public ObservableList<StringProperty> getEquipmentKinds() {
-        return equipmentKinds.get();
+    public ObservableList<StringProperty> getEquipmentGroups() {
+        return equipmentGroups.get();
     }
 
-    public void setEquipmentKinds(ObservableList<StringProperty> equipmentKinds) {
-        this.equipmentKinds.set(equipmentKinds);
+    public void setEquipmentGroups(ObservableList<StringProperty> equipmentGroups) {
+        this.equipmentGroups.set(equipmentGroups);
+    }
+
+    ////// available property
+
+    public boolean isAvailable() {
+        return available.get();
     }
 
     public BooleanProperty availableProperty() {
-        return this.available;
+        return available;
     }
 
-    public Boolean getAvailable() {
-        return this.available.getValue();
-    }
-
-    public void setAvailable(Boolean available) {
+    public void setAvailable(boolean available) {
         this.available.set(available);
+    }
+
+    // ******************************* method factories ******************************
+
+    public Station stationFactory(String stationName) {
+        return StationFactory.initStation(new Station(stationName));
     }
 }
