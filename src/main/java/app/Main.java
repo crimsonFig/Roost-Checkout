@@ -22,7 +22,7 @@ public static final String STYLESHEET = "view/stylesheet.css";
 	   
 	   //menu view, base
 	   Parent root;  
-	   FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/menu.fxml"));			   
+	   FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/base.fxml"));
 	   MenuController menuController = new MenuController();   
 	   loader.setController(menuController);
 	   root = loader.load();
