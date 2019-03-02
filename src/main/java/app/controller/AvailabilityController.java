@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.assertj.core.util.Arrays;
 
 public class AvailabilityController implements Controller {
     @FXML private VBox      rootNode;
