@@ -1,40 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.collections.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="273.0" prefWidth="236.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-  <center>
-    <VBox alignment="BASELINE_LEFT" fillWidth="true" prefHeight="592.0" prefWidth="409.0" spacing="15.0" BorderPane.alignment="CENTER">
-      <children>
+<VBox fx:id="rootNode" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="285.0" prefWidth="350.0"
+      spacing="6.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.CheckInController">
+    <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+    </padding>
+    <HBox alignment="CENTER_LEFT">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <Separator HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </HBox.margin>
+        </Separator>
         <Label text="Check In">
-          <font>
-            <Font size="40.0" />
-          </font>
+            <font>
+                <Font size="24.0"/>
+            </font>
         </Label>
-        <Label text="Banner ID">
-          <labelFor>
-            <TextField fx:id="bannerIdField" maxWidth="-Infinity" prefWidth="-1.0" VBox.vgrow="NEVER" />
-          </labelFor>
-        </Label>
-        <fx:reference source="bannerIdField" />
-        <Label text="Employee Initials">
-          <labelFor>
-            <TextField fx:id="employeeInitialsField" maxWidth="-Infinity" prefWidth="-1.0" VBox.vgrow="NEVER" />
-          </labelFor>
-        </Label>
-        <fx:reference source="employeeInitialsField" />
-        <Button fx:id="submit" mnemonicParsing="false" onAction="#submitAction" text="Check In" />
-      </children>
-      <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="10.0" />
-      </padding>
+        <Separator HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </HBox.margin>
+        </Separator>
+    </HBox>
+    <VBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox>
+                    <children>
+                        <Separator orientation="VERTICAL" VBox.vgrow="ALWAYS">
+                            <VBox.margin>
+                                <Insets/>
+                            </VBox.margin>
+                        </Separator>
+                    </children>
+                    <HBox.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                    </HBox.margin>
+                </VBox>
+                <VBox>
+                    <children>
+                        <TextField fx:id="tfBannerID" prefWidth="200.0" promptText="BannerID" styleClass="form">
+                            <VBox.margin>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </VBox.margin>
+                        </TextField>
+                        <TextField fx:id="tfEmpInitials" prefWidth="200.0" promptText="Employee Initials"
+                                   styleClass="form">
+                            <VBox.margin>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </VBox.margin>
+                        </TextField>
+                    </children>
+                    <HBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </HBox.margin>
+                </VBox>
+            </children>
+        </HBox>
     </VBox>
-  </center>
-</BorderPane>
+    <HBox alignment="CENTER_RIGHT" spacing="8.0">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <Separator HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets/>
+            </HBox.margin>
+        </Separator>
+        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleSubmitAction"
+                styleClass="form" text="Submit" textAlignment="CENTER"/>
+    </HBox>
+</VBox>
