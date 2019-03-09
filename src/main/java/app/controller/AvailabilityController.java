@@ -12,15 +12,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class AvailabilityController implements Controller {
+public class AvailabilityController extends TrayViewLifecycleStrategy {
+    static private final ViewStrategy.TrayViewConfigStrategy viewConfigStrategy = ViewStrategy.PURE_TRAY_VIEWS.AVAILABILITY;
+
     @FXML private VBox      rootNode;
     @FXML private ImageView ivLogo;
 
@@ -55,20 +56,20 @@ public class AvailabilityController implements Controller {
         ObservableList<Station> tt = new ObservableListWrapper<>(mockTT);
 
         StationNameWatcher poolW = new StationNameWatcher(pool, "Pool");
-        StationNameWatcher tvW = new StationNameWatcher(tv, "TV");
-        StationNameWatcher ttW = new StationNameWatcher(tt, "Tennis Table");
+        StationNameWatcher tvW   = new StationNameWatcher(tv, "TV");
+        StationNameWatcher ttW   = new StationNameWatcher(tt, "Tennis Table");
 
         List<Equipment> mockSmash = new ArrayList<>();
         mockSmash.add(Equipment.equipmentFactory("Smash Bro."));
-        ObservableList<Equipment> smash = new ObservableListWrapper<>(mockSmash);
-        EquipmentNameWatcher smashW = new EquipmentNameWatcher(smash, "Smash Bro.");
+        ObservableList<Equipment> smash  = new ObservableListWrapper<>(mockSmash);
+        EquipmentNameWatcher      smashW = new EquipmentNameWatcher(smash, "Smash Bro.");
 
         tvStationsAvailability.getItems().addAll(poolW, tvW, ttW);
         tvEquipAvailability.getItems().addAll(smashW);
         initStationTable();
         initEquipmentTable();
 
-        
+
     }
 
     /**
@@ -104,5 +105,25 @@ public class AvailabilityController implements Controller {
 
         List<Button> buttons = Collections.singletonList(equipmentAvailabilityButton);
         tcEquipAvailability.setCellFactory(ActionButtonsTableCell.cellCallback(buttons));
+    }
+
+    @Override
+    protected ViewStrategy.TrayViewConfigStrategy getViewStrategyConfig() {
+        return viewConfigStrategy;
+    }
+
+    @Override
+    protected BorderPane getBase() {
+        return ViewDirector.getViewDirector().getBase();
+    }
+
+    @Override
+    protected Pane getContent() {
+        return rootNode;
+    }
+
+    @Override
+    protected void unloadControllerResources() {
+        // no op
     }
 }

@@ -36,6 +36,8 @@ public class StationNameWatcher {
     public StationNameWatcher(ObservableList<Station> stations, String stationName) throws IllegalArgumentException {
         this.stations = stations;
         //this.stations.forEach(this::addWeakStationListener);
+        // todo: wait until after constructor is done before subscribing listeners. (what if validation fails, aborting construction, but listeners are still hooked. risky biz)
+        // todo: still, validate the watcher first before finishing the constructor
         this.stationName = new SimpleStringProperty(this, "stationName", stationName);
         this.formattedAmount = new SimpleStringProperty(this, "formattedAmount", createFormattedAmount());
     }
@@ -144,4 +146,6 @@ public class StationNameWatcher {
         }
         station.availableProperty().addListener(availableChangeListener);
     }
+
+    //todo: create factory method to call constructor and then initialize everything.
 }

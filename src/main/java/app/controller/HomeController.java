@@ -3,9 +3,8 @@ package app.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import app.model.OutEntry;
-import app.model.Station;
-import app.model.WaitlistEntry;
+import app.model.Session;
+import app.model.Waitlist;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,43 +12,41 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class HomeController implements Controller, Initializable {
-	
-	@FXML
-	TableView<WaitlistEntry> waitlistTable;
-	@FXML
-	TableView<OutEntry> whatsOutTable;
-	@FXML
-	private TableColumn<WaitlistEntry, String> nameWaitColumn, timeWaitColumn, stationWaitColumn;
-	@FXML
-	private TableColumn<OutEntry, String> bannerOutColumn, nameOutColumn, stationOutColumn, equipmentOutColumn, timeOutColumn, refreshOutColumn;
+public class HomeController implements Initializable {
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		nameWaitColumn.setCellValueFactory(new PropertyValueFactory<WaitlistEntry, String>("name"));
-		timeWaitColumn.setCellValueFactory(new PropertyValueFactory<WaitlistEntry, String>("time"));
-		stationWaitColumn.setCellValueFactory(new PropertyValueFactory<WaitlistEntry, String>("stationName"));
-	
-		
-		bannerOutColumn.setCellValueFactory(new PropertyValueFactory<OutEntry, String>("banner"));
-		nameOutColumn.setCellValueFactory(new PropertyValueFactory<OutEntry, String>("name"));
-		stationOutColumn.setCellValueFactory(new PropertyValueFactory<OutEntry, String>("stationName"));
-		equipmentOutColumn.setCellValueFactory(new PropertyValueFactory<OutEntry, String>("equipmentString"));
-		timeOutColumn.setCellValueFactory(new PropertyValueFactory<OutEntry, String>("time"));
-		try {
-			loadMock();
+    @FXML private TableView<Waitlist>          tvWaitlist;
+    @FXML private TableView<Session>           tvSession;
+    @FXML private TableColumn<Session, String> tcSessionBanner, tcSessionName, tcSessionStation, tcSessionEquip, tcSessionTimer, tcSessionButtons;
+    @FXML private TableColumn<Waitlist, String> tcWaitlistName, tcWaitlistTimer, tcWaitlistStation, tcWaitlistEquip, tcWaitlistButtons;
 
-		}catch (Exception e) {}
-		
-		
-	}
-	
-	private void loadMock() {
-		
-		
-		
-		whatsOutTable.setItems(FXCollections.observableArrayList(new OutEntry("Nick", 12343455, "Pool", "Pool Sticks"), new OutEntry("Maurice", 978673, "Chess", "Chess Pieces")));
-		waitlistTable.setItems(FXCollections.observableArrayList(new WaitlistEntry("Triston", "Pool"), new WaitlistEntry("Hugo", "Chess"), new WaitlistEntry("Lexi", "Pool")));
-	}
-	
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        tcWaitlistName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tcWaitlistTimer.setCellValueFactory(new PropertyValueFactory<>("time"));
+        tcWaitlistStation.setCellValueFactory(new PropertyValueFactory<>("stationName"));
+
+
+        tcSessionBanner.setCellValueFactory(new PropertyValueFactory<>("banner"));
+        tcSessionName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tcSessionStation.setCellValueFactory(new PropertyValueFactory<>("stationName"));
+        tcSessionEquip.setCellValueFactory(new PropertyValueFactory<>("equipmentString"));
+        tcSessionTimer.setCellValueFactory(new PropertyValueFactory<>("time"));
+        try {
+            loadMock();
+
+        } catch (Exception e) {}
+
+
+    }
+
+    private void loadMock() {
+
+
+        tvSession.setItems(FXCollections.observableArrayList(new Session("Nick", 12343455, "Pool", "Pool Sticks"),
+                                                             new Session("Maurice", 978673, "Chess", "Chess Pieces")));
+        tvWaitlist.setItems(FXCollections.observableArrayList(new Waitlist("Triston", "Pool"),
+                                                              new Waitlist("Hugo", "Chess"),
+                                                              new Waitlist("Lexi", "Pool")));
+    }
+
 }

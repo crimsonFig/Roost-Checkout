@@ -1,39 +1,61 @@
 package app.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 
-public class CheckOutController extends FormController implements Controller, Initializable {
+public class CheckOutController extends TrayViewLifecycleStrategy {
+    static private final ViewStrategy.TrayViewConfigStrategy VIEW_CONFIG_STRATEGY = ViewStrategy.PURE_TRAY_VIEWS.CHECK_OUT;
 
-	@FXML
-	private Button submitButton;	
-	@FXML
-	private ComboBox equipmentBox;
-	@FXML
-	private ComboBox stationBox;
-	@FXML
-	private TextField bannerIdField, nameField;
-	
-	public CheckOutController(Stage stage) {
-		super(stage);
-	}
+    @FXML private Pane      rootNode;
+    @FXML private TextField tfBannerID;
+    @FXML private TextField tfName;
+    @FXML private ComboBox  cbStation;
+    @FXML private ComboBox  cbEquipment;
+    @FXML private Button    submitButton;
 
+    @FXML
+    private void initialize() {
+        //get station list from station container and populate cbStation
+    }
 
-	public void submitAction() {
-		
-		
-	}
+    @FXML
+    private void handleStationSelection(Event event) {
+        //get equipable list from station's type
+    }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {		
-	}
-	
+    @FXML
+    private void handleEquipmentSelection(Event event) {
+        //check watchers if station and equipment selected have at least one available each
+    }
+
+    @FXML
+    private void handleSubmitAction(ActionEvent actionEvent) {
+        ViewDirector.getViewDirector().handleCloseActiveView(this);
+    }
+
+    @Override
+    protected ViewStrategy.TrayViewConfigStrategy getViewStrategyConfig() {
+        return VIEW_CONFIG_STRATEGY;
+    }
+
+    @Override
+    protected BorderPane getBase() {
+        return ViewDirector.getViewDirector().getBase();
+    }
+
+    @Override
+    protected Pane getContent() {
+        return rootNode;
+    }
+
+    @Override
+    protected void unloadControllerResources() {
+        // no op
+    }
 }
