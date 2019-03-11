@@ -8,9 +8,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CheckOutController extends TrayViewLifecycleStrategy {
-    static private final ViewStrategy.TrayViewConfigStrategy VIEW_CONFIG_STRATEGY = ViewStrategy.PURE_TRAY_VIEWS.CHECK_OUT;
+    private static final Logger LOGGER = LogManager.getLogger(NoticeController.class);
+
+    private static final ViewStrategy.TrayViewConfigStrategy VIEW_CONFIG_STRATEGY = ViewStrategy.PURE_TRAY_VIEWS.CHECK_OUT;
 
     @FXML private Pane      rootNode;
     @FXML private TextField tfBannerID;

@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 public class CheckInController extends TrayViewLifecycleStrategy {
     private static final Logger LOGGER = LogManager.getLogger(CheckInController.class);
 
-    static private final ViewStrategy.TrayViewConfigStrategy VIEW_CONFIG_STRATEGY = ViewStrategy.PURE_TRAY_VIEWS.CHECK_IN;
+    private static final ViewStrategy.TrayViewConfigStrategy VIEW_CONFIG_STRATEGY = ViewStrategy.PURE_TRAY_VIEWS.CHECK_IN;
 
     @FXML private VBox      rootNode;
     @FXML private Button    submitButton;

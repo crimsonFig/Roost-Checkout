@@ -68,7 +68,7 @@ public class ViewStrategy {
         CHECK_IN("/view/checkIn.fxml", CARDINAL.LEFT_SIDE),
         CHECK_OUT("/view/checkOut.fxml", CARDINAL.LEFT_SIDE),
         AVAILABILITY("/view/availability.fxml", CARDINAL.RIGHT_SIDE),
-        ALERT_TRAY("/view/notifications.fxml", CARDINAL.RIGHT_SIDE);
+        NOTICE_TRAY("/view/notifications.fxml", CARDINAL.RIGHT_SIDE);
 
         private String   path;
         private CARDINAL side;

@@ -2,7 +2,6 @@ package app.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +35,7 @@ public class BaseController {
 
     @FXML
     private void handleBellAction() {
-        ViewDirector.getViewDirector().handleDisplayingPureView(ViewStrategy.PURE_TRAY_VIEWS.ALERT_TRAY, bellButton);
+        ViewDirector.getViewDirector().handleDisplayingPureView(ViewStrategy.PURE_TRAY_VIEWS.NOTICE_TRAY, bellButton);
     }
 
     public BorderPane getBase() {
