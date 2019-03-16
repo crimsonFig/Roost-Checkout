@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
  * Specifically, this watcher watches for changes to the equipment availability and then reports a table friendly
  * amount string.
  */
-public class EquipmentNameWatcher {
+public class EquipmentNameWatcher implements AvailabilityWatcher {
     private ObservableList<Equipment>   equipments;
     private StringProperty              equipmentName;
     private StringProperty              formattedAmount;
@@ -92,11 +92,11 @@ public class EquipmentNameWatcher {
 
     ////// pseudo availability getters
 
-    private int getCurrentAvailable() {
+    public int getCurrentAvailable() {
         return equipments.stream().filter(Equipment::isAvailable).mapToInt(element -> 1).sum();
     }
 
-    private Integer getTotalAmount() {
+    public Integer getTotalAmount() {
         return equipments.size();
     }
 

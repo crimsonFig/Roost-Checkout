@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
  * Specifically, this watcher watches for changes to the station availability and then reports a table friendly amount
  * string.
  */
-public class StationNameWatcher {
+public class StationNameWatcher implements AvailabilityWatcher {
     private ObservableList<Station> stations;
     private StringProperty          stationName;
     private StringProperty          formattedAmount;
@@ -47,7 +47,7 @@ public class StationNameWatcher {
     }
 
     private ChangeListener<Boolean> createChangeListener() {
-        return new WeakChangeListener<Boolean>(this::handleAvailableChangeEvent);
+        return new WeakChangeListener<Boolean>(this::handleAvailableChangeEvent_UpdateFormattedAmount);
     }
 
     // ********************* getters, setters, adders *******************
@@ -95,12 +95,14 @@ public class StationNameWatcher {
 
     ////// pseudo getters for availability
 
-    private int getCurrentAvailable() {
+    @Override
+    public int getCurrentAvailable() {
         // counts the number of stations in the list that has available set to true
         return stations.stream().filter(Station::isAvailable).mapToInt(element -> 1).sum();
     }
 
-    private Integer getTotalAmount() {
+    @Override
+    public Integer getTotalAmount() {
         return stations.size();
     }
 
@@ -118,9 +120,9 @@ public class StationNameWatcher {
      *         the new boolean value in the property
      */
     @SuppressWarnings("unused")
-    private void handleAvailableChangeEvent(ObservableValue<? extends Boolean> observableValue,
-                                            Boolean oldValue,
-                                            Boolean newValue) {
+    private void handleAvailableChangeEvent_UpdateFormattedAmount(ObservableValue<? extends Boolean> observableValue,
+                                                                  Boolean oldValue,
+                                                                  Boolean newValue) {
         setFormattedAmount(createFormattedAmount());
     }
 

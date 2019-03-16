@@ -4,18 +4,16 @@ import app.container.EquipmentNameWatcher;
 import app.container.StationNameWatcher;
 import app.model.Equipment;
 import app.model.Station;
-import app.util.control.ActionButtonsTableCell;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -26,14 +24,10 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
     @FXML private ImageView ivLogo;
 
     @FXML private TableView<StationNameWatcher>           tvStationsAvailability;
-    @FXML private TableColumn<StationNameWatcher, String> tcStationName;
-    @FXML private TableColumn<StationNameWatcher, String> tcStationAmount;
-    @FXML private TableColumn<StationNameWatcher, HBox>   tcStationAvailability;
+    @FXML private TableColumn<StationNameWatcher, String> tcStationName, tcStationAmount, tcStationAvailability;
 
     @FXML private TableView<EquipmentNameWatcher>           tvEquipAvailability;
-    @FXML private TableColumn<EquipmentNameWatcher, String> tcEquipName;
-    @FXML private TableColumn<EquipmentNameWatcher, String> tcEquipAmount;
-    @FXML private TableColumn<EquipmentNameWatcher, HBox>   tcEquipAvailability;
+    @FXML private TableColumn<EquipmentNameWatcher, String> tcEquipName, tcEquipAmount, tcEquipAvailability;
 
     @FXML
     private void initialize() {
@@ -68,8 +62,6 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
         tvEquipAvailability.getItems().addAll(smashW);
         initStationTable();
         initEquipmentTable();
-
-
     }
 
     /**
@@ -79,15 +71,25 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
         // set the table columns to have their value reflect the given properties. will auto update on value changes.
         tcStationName.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcStationAmount.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
+        tcStationAvailability.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
+        tcStationAvailability.setCellFactory(param -> new TableCell<StationNameWatcher, String>() {
+            final Button btn = new Button();
 
-        // add a button to the third column
-        Button stationAvailabilityButton = new Button("+");
-
-        //todo: need to have button update it's icon based on availability change
-        //todo: button should open up a stationWaitListView tray
-
-        List<Button> buttons = Collections.singletonList(stationAvailabilityButton);
-        tcStationAvailability.setCellFactory(ActionButtonsTableCell.cellCallback(buttons));
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    btn.setMaxWidth(Double.MAX_VALUE);
+                    btn.setDisable(true);
+                    btn.setText((param.getTableView().getItems().get(getIndex()).getCurrentAvailable() > 0)
+                                ? "+"
+                                : "-");
+                    setGraphic(btn);
+                }
+            }
+        });
     }
 
     /**
@@ -97,14 +99,25 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
         // set the table columns to have their value reflect the given properties. will auto update on value changes.
         tcEquipName.setCellValueFactory(e -> e.getValue().equipmentNameProperty());
         tcEquipAmount.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
+        tcEquipAvailability.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
+        tcEquipAvailability.setCellFactory(param -> new TableCell<EquipmentNameWatcher, String>() {
+            final Button btn = new Button();
 
-        Button equipmentAvailabilityButton = new Button("-");
-
-        //todo: need to have button update it's icon based on availability change
-        //todo: button should not do anything. Only a visual indicator.
-
-        List<Button> buttons = Collections.singletonList(equipmentAvailabilityButton);
-        tcEquipAvailability.setCellFactory(ActionButtonsTableCell.cellCallback(buttons));
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    btn.setMaxWidth(Double.MAX_VALUE);
+                    btn.setDisable(true);
+                    btn.setText((param.getTableView().getItems().get(getIndex()).getCurrentAvailable() > 0)
+                                ? "+"
+                                : "-");
+                    setGraphic(btn);
+                }
+            }
+        });
     }
 
     @Override
@@ -124,6 +137,6 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
 
     @Override
     protected void unloadControllerResources() {
-        // no op
+        // unbind action cells
     }
 }
