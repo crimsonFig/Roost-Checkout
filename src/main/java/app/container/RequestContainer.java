@@ -14,11 +14,11 @@ public class RequestContainer {
 
     private RequestContainer() {}
 
-    private RequestContainer initRequestContainer() {
+    private static RequestContainer initRequestContainer() {
         return new RequestContainer();
     }
 
-    public RequestContainer getInstance() {
+    public static RequestContainer getInstance() {
         if (instance == null) {
             instance = initRequestContainer();
         }
@@ -34,6 +34,10 @@ public class RequestContainer {
                                  .filter(request -> request.getBanner() == bannerID)
                                  .findFirst()
                                  .orElseThrow(NoSuchElementException::new);
+    }
+
+    public void removeFromWaitlist(Request request) {
+        waitListedRequests.remove(request);
     }
 
     public void addListChangeListener(ListChangeListener<Request> listener) {
@@ -53,6 +57,10 @@ public class RequestContainer {
         // }
 
         // possibly do some logging
+    }
+
+    public boolean hasWaitListedRequest(String stationName) {
+        return waitListedRequests.stream().anyMatch(e -> e.getStationName().equals(stationName));
     }
 
     // todo: create a method that can calculate the wait times for all wait listed requests.
