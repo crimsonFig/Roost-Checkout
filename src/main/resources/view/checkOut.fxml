@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="rootNode" alignment="TOP_CENTER" prefHeight="285.0" prefWidth="350.0" spacing="6.0"
+      xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.CheckOutController">
+    <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+    </padding>
+    <HBox alignment="CENTER">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <Separator HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </HBox.margin>
+        </Separator>
+        <Label text="Check Out">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <Separator HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </HBox.margin>
+        </Separator>
+    </HBox>
+    <VBox VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <HBox VBox.vgrow="ALWAYS">
+            <VBox>
+                <HBox.margin>
+                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                </HBox.margin>
+                <Separator orientation="VERTICAL" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </Separator>
+            </VBox>
+            <VBox>
+                <HBox.margin>
+                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                </HBox.margin>
+                <TextField fx:id="tfBannerID" alignment="TOP_LEFT" prefWidth="200.0" promptText="BannerID"
+                           styleClass="form">
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                </TextField>
+                <TextField fx:id="tfName" prefWidth="200.0" promptText="Name" styleClass="form">
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                </TextField>
+                <ComboBox fx:id="cbStation" onHidden="#handleStationSelection" prefWidth="200.0" promptText="Station"
+                          styleClass="form" visibleRowCount="6">
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                </ComboBox>
+                <ComboBox fx:id="cbEquipment" disable="true" onHidden="#handleEquipmentSelection" prefWidth="175.0"
+                          promptText="Equipment" styleClass="form" visibleRowCount="6">
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                </ComboBox>
+            </VBox>
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" spacing="8.0" VBox.vgrow="NEVER">
+            <Separator HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets/>
+                </HBox.margin>
+            </Separator>
+            <Button fx:id="submitButton" mnemonicParsing="false" onAction="#handleSubmitAction" styleClass="form"
+                    text="Submit">
+                <HBox.margin>
+                    <Insets/>
+                </HBox.margin>
+            </Button>
+        </HBox>
+    </VBox>
+</VBox>
