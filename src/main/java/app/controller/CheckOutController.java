@@ -76,12 +76,17 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
 
     @FXML
     private void handleSubmitAction(ActionEvent actionEvent) {
+        try {
+            int rBanner = Integer.parseInt(tfBannerID.getText());
+            String rName = tfName.getText();
+            String rStationName = cbStation.getSelectionModel().getSelectedItem().getStationName();
+            ObservableList<String> rEquipmentNameList = FXCollections.observableArrayList(cbEquipment.getSelectionModel().getSelectedItem().getEquipmentName());
+            RequestContainer.getInstance().checkOutRequest(rBanner, rName, rStationName, rEquipmentNameList);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        
         ViewDirector.getViewDirector().handleCloseActiveView(this);
-        int rBanner = Integer.parseInt(tfBannerID.getText());
-        String rName = tfName.getText();
-        String rStationName = cbStation.getSelectionModel().getSelectedItem().getStationName();
-        ObservableList<String> rEquipmentNameList = FXCollections.observableArrayList(cbEquipment.getSelectionModel().getSelectedItem().getEquipmentName());
-        RequestContainer.getInstance().checkOutRequest(rBanner, rName, rStationName, rEquipmentNameList);
     }
 
     @Override
