@@ -44,17 +44,24 @@ public class RequestContainer {
         waitListedRequests.addListener(listener);
     }
 
+    public void checkOutRequest(Integer banner,
+                                String name,
+                                String stationName,
+                                ObservableList<String> equipment) {
+        checkOutRequest(Request.initRequest(banner, name, stationName, equipment));
+    }
+
     public void checkOutRequest(Request request) {
         // given a request, determine if the station/equipment of the type is available
 
-        // if (StationContainer.isAvailable(request.getStationName) &&
-        //     EquipmentContainer.isAvailable(request.getEquipment)) {
-        //     // if available, then start a session with the request
-        //     SessionContainer.getInstance().startSession(request);
-        //     waitListedRequests.remove(request); //attempt to remove the request if it exists in the waitlist already
-        // } else {
-        //     waitListedRequests.add(request);
-        // }
+        if (StationContainer.getInstance().isAvailable(request.getStationName()) &&
+            EquipmentContainer.getInstance().isAvailable(request.getEquipment())) {
+            // if available, then start a session with the request
+            SessionContainer.getInstance().startSession(request);
+            waitListedRequests.remove(request); //attempt to remove the request if it exists in the waitlist already
+        } else {
+            waitListedRequests.add(request);
+        }
 
         // possibly do some logging
     }

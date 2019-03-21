@@ -1,7 +1,12 @@
 package app.model;
 
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * a station model. utilizes `Property` classes in order to allow other objects to listen for value changes.
@@ -24,9 +29,9 @@ public class Station {
         this.available = new SimpleBooleanProperty(this, "available", Boolean.TRUE);
     }
 
-    private Station(String stationKind, ListProperty<StringProperty> equipmentKinds, Boolean available) {
+    private Station(String stationKind, ObservableList<StringProperty> equipmentNames, Boolean available) {
         this.stationName = new SimpleStringProperty(this, "stationName", stationKind);
-        this.equipmentGroups = new SimpleListProperty<>(this, "equipmentGroups", equipmentKinds);
+        this.equipmentGroups = new SimpleListProperty<>(this, "equipmentGroups", equipmentNames);
         this.available = new SimpleBooleanProperty(this, "available", available);
     }
 
@@ -77,5 +82,11 @@ public class Station {
 
     public static Station stationFactory(String stationName) {
         return StationFactory.initStation(new Station(stationName));
+    }
+
+    public static Station stationFactory(String stationName, String...equipmentNames) {
+        List<String> names = Arrays.asList(equipmentNames);
+        List<StringProperty> eNames = names.stream().map(SimpleStringProperty::new).collect(Collectors.toList());
+        return new Station(stationName, FXCollections.observableArrayList(eNames), true);
     }
 }

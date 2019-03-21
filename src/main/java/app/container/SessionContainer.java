@@ -2,6 +2,7 @@ package app.container;
 
 import app.model.Request;
 import app.model.Session;
+import app.util.exception.RequestFailure;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -56,17 +57,19 @@ public class SessionContainer {
 
     public void checkInSession(Session session) {
         // set session to 'inactive'
+        session.activeProperty().setValue(false);
         // * this should trigger a listener event for
         // * a session list removal event, which has session container remove the session from the sessions list
         // * * an availability change event, which sets the session's station and equipment availability property to true
         // * * * the availability change should trigger a notice creation event, which makes a notice if there is a waitlisted request for the newly available station/equipment
         // * * a logging/reporting event, which has a gateway or reporting class log statistical info to the database
 
-        // request the model to remove all listeners hooked to it. (i.e. call it's 'unloadResources' method)
+        // todo - request the model to remove all listeners hooked to it. (i.e. call it's 'unloadResources' method)
+
     }
 
     public void refreshSessionTimer(Session session) {
-        // ...
+        session.refreshTimer();
     }
 
     void startSession(Request request) {
@@ -74,11 +77,20 @@ public class SessionContainer {
         // * the session object should call it's init factory method
         // * * init factory method lets constructor finish in case of constructor failure and then
         // * * get station and equipable objects from request and ask the respective containers to make them unavailable
+        Session newSession = Session.initSession(request.getBanner(), request.getName(), request.getStationName(), request.getEquipment());
 
-        // apply listener to session's active property that calls the handleActiveSessionChangeEvent method
-        // * this method would call the removeSession method
+        // this is done explicitly here to ensure that a session can lock the station and equipment first before adding it to the list
+        try {
+            StationContainer.getInstance().requestSetAvail(newSession.getStationName(), false); //make sure the request methods can roll back changes if an issue was caught.
+            EquipmentContainer.getInstance().requestSetAvail(newSession.getEquipmentNames(), false);
+        } catch (RequestFailure e) {
+            // todo - throw issue up. pref to a controller than can display a custom alert
+
+        }
+
 
         // add session to sessions list
+        sessions.add(newSession);
         // * this should have other containers that is watching the sessions list to apply their listeners to the newly added session
         // * * listeners would be the ones mentioned in checkInSession
         // * * additionally, notice container should apply a listener for the session's timer property on reaching zero, create a notice about the person needing to be checked in or refreshed (if no one is waiting for them)

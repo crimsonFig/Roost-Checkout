@@ -104,24 +104,18 @@ public class HomeController implements Initializable {
                                                                                  "triston",
                                                                                  "Pool",
                                                                                  FXCollections.observableArrayList(
-                                                                                         Equipment.equipmentFactory(
-                                                                                                 "Sticks"))),
+                                                                                         "Sticks")),
                                                              Session.initSession(4235163,
                                                                                  "Hugo",
                                                                                  "TV",
                                                                                  FXCollections.observableArrayList(
-                                                                                         Equipment.equipmentFactory(
-                                                                                                 "Game")))));
+                                                                                         "Game"))));
 
         tvWaitlist.setItems(FXCollections.observableArrayList(Request.initRequest(2138743,
                                                                                   "triston",
                                                                                   "Pool",
                                                                                   FXCollections.observableArrayList(
-                                                                                          Equipment.equipmentFactory(
-                                                                                                  "Sticks")),
-                                                                                  LocalTime.now()
-                                                                                           .plus(5, ChronoUnit.MINUTES)
-                                                                                           .toSecondOfDay())));
+                                                                                          "Sticks"))));
     }
 
 }

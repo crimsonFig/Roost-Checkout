@@ -2,7 +2,6 @@ package app.controller;
 
 import app.container.EquipmentNameWatcher;
 import app.container.StationNameWatcher;
-import app.util.control.ActionButtonsTableCell;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
