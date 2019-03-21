@@ -46,11 +46,11 @@
 		-fx-text-align: center;
 }
 
-.button:hover > * {
+.button:hover  {
 	-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e);
 	-fx-text-align: center;
 }
-.button:focused > *{
+.button:focused {
 	-fx-background-color: linear-gradient(to top, #f4bb7d, #f4b872, #f4b666, #f3b35a, #f2b14e);
 	-fx-text-align: center;
 }
