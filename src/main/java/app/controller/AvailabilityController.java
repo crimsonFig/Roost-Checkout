@@ -1,7 +1,6 @@
 package app.controller;
 
-import app.container.EquipmentNameWatcher;
-import app.container.StationNameWatcher;
+import app.container.*;
 import app.model.Equipment;
 import app.model.Station;
 import com.sun.javafx.collections.ObservableListWrapper;
@@ -23,43 +22,20 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
     @FXML private VBox      rootNode;
     @FXML private ImageView ivLogo;
 
-    @FXML private TableView<StationNameWatcher>           tvStationsAvailability;
-    @FXML private TableColumn<StationNameWatcher, String> tcStationName, tcStationAmount, tcStationAvailability;
+    @FXML private TableView<StationWatcher>           tvStationsAvailability;
+    @FXML private TableColumn<StationWatcher, String> tcStationName, tcStationAmount, tcStationAvailability;
 
-    @FXML private TableView<EquipmentNameWatcher>           tvEquipAvailability;
-    @FXML private TableColumn<EquipmentNameWatcher, String> tcEquipName, tcEquipAmount, tcEquipAvailability;
+    @FXML private TableView<EquipmentWatcher>           tvEquipAvailability;
+    @FXML private TableColumn<EquipmentWatcher, String> tcEquipName, tcEquipAmount, tcEquipAvailability;
 
     @FXML
     private void initialize() {
-        List<Station> mockPool = new ArrayList<>();
-        mockPool.add(Station.stationFactory("Pool"));
-        mockPool.add(Station.stationFactory("Pool"));
-        mockPool.add(Station.stationFactory("Pool"));
-        mockPool.add(Station.stationFactory("Pool"));
-        ObservableList<Station> pool = new ObservableListWrapper<>(mockPool);
 
-        List<Station> mockTV = new ArrayList<>();
-        mockTV.add(Station.stationFactory("TV"));
-        mockTV.add(Station.stationFactory("TV"));
-        mockTV.add(Station.stationFactory("TV"));
-        ObservableList<Station> tv = new ObservableListWrapper<>(mockTV);
 
-        List<Station> mockTT = new ArrayList<>();
-        mockTT.add(Station.stationFactory("Tennis Table"));
-        mockTT.add(Station.stationFactory("Tennis Table"));
-        ObservableList<Station> tt = new ObservableListWrapper<>(mockTT);
 
-        StationNameWatcher poolW = new StationNameWatcher(pool, "Pool");
-        StationNameWatcher tvW   = new StationNameWatcher(tv, "TV");
-        StationNameWatcher ttW   = new StationNameWatcher(tt, "Tennis Table");
 
-        List<Equipment> mockSmash = new ArrayList<>();
-        mockSmash.add(Equipment.equipmentFactory("Smash Bro."));
-        ObservableList<Equipment> smash  = new ObservableListWrapper<>(mockSmash);
-        EquipmentNameWatcher      smashW = new EquipmentNameWatcher(smash, "Smash Bro.");
-
-        tvStationsAvailability.getItems().addAll(poolW, tvW, ttW);
-        tvEquipAvailability.getItems().addAll(smashW);
+        tvStationsAvailability.getItems().addAll(StationContainer.getInstance().getStationWatchers());
+        tvEquipAvailability.getItems().addAll(EquipmentContainer.getInstance().getEquipmentWatchers());
         initStationTable();
         initEquipmentTable();
     }
@@ -72,7 +48,7 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
         tcStationName.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcStationAmount.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
         tcStationAvailability.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
-        tcStationAvailability.setCellFactory(param -> new TableCell<StationNameWatcher, String>() {
+        tcStationAvailability.setCellFactory(param -> new TableCell<StationWatcher, String>() {
             final Button btn = new Button();
 
             @Override
@@ -100,7 +76,7 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
         tcEquipName.setCellValueFactory(e -> e.getValue().equipmentNameProperty());
         tcEquipAmount.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
         tcEquipAvailability.setCellValueFactory(e -> e.getValue().formattedAmountProperty());
-        tcEquipAvailability.setCellFactory(param -> new TableCell<EquipmentNameWatcher, String>() {
+        tcEquipAvailability.setCellFactory(param -> new TableCell<EquipmentWatcher, String>() {
             final Button btn = new Button();
 
             @Override

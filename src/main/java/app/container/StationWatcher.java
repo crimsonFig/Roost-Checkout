@@ -8,6 +8,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
 import javafx.collections.ObservableList;
 
+import java.util.NoSuchElementException;
+
 /**
  * Watches the values within the elements of the equipment list for changes and then updates it's own properties
  * accordingly. Each watcher should only observe over a specific kind of a model, i.e. all models share the same name.
@@ -15,11 +17,11 @@ import javafx.collections.ObservableList;
  * Specifically, this watcher watches for changes to the station availability and then reports a table friendly amount
  * string.
  */
-public class StationNameWatcher implements AvailabilityWatcher {
+public class StationWatcher implements AvailabilityWatcher {
     private ObservableList<Station> stations;
     private StringProperty          stationName;
     private StringProperty          formattedAmount;
-    private ChangeListener<Boolean> availableChangeListener = createChangeListener();
+    private ChangeListener<Boolean> availableChangeListener;
 
     // ************************ initializers, creators **********************************
 
@@ -33,21 +35,19 @@ public class StationNameWatcher implements AvailabilityWatcher {
      * @throws IllegalArgumentException
      *         if a station in `stations` has a mismatching station name to the watcher
      */
-    public StationNameWatcher(ObservableList<Station> stations, String stationName) throws IllegalArgumentException {
+    public StationWatcher(ObservableList<Station> stations, String stationName) throws IllegalArgumentException {
         this.stations = stations;
         //this.stations.forEach(this::addWeakStationListener);
         // todo: wait until after constructor is done before subscribing listeners. (what if validation fails, aborting construction, but listeners are still hooked. risky biz)
         // todo: still, validate the watcher first before finishing the constructor
         this.stationName = new SimpleStringProperty(this, "stationName", stationName);
         this.formattedAmount = new SimpleStringProperty(this, "formattedAmount", createFormattedAmount());
+
+        availableChangeListener = new WeakChangeListener<Boolean>(this::handleAvailableChangeEvent_UpdateFormattedAmount);
     }
 
     private String createFormattedAmount() {
         return String.format("%d/%d", getCurrentAvailable(), getTotalAmount());
-    }
-
-    private ChangeListener<Boolean> createChangeListener() {
-        return new WeakChangeListener<Boolean>(this::handleAvailableChangeEvent_UpdateFormattedAmount);
     }
 
     // ********************* getters, setters, adders *******************
@@ -106,6 +106,21 @@ public class StationNameWatcher implements AvailabilityWatcher {
         return stations.size();
     }
 
+    /**
+     * An API method that helps treat the station pool as a single entity. Flips the availability property
+     * of a single station within the pool, essentially decrementing or incrementing the number of stations
+     * available in this pool.
+     * @param availability the availability value to change the station's property to
+     * @throws NoSuchElementException if all stations in the pool have the same availability as the one supplied
+     */
+    void setAvailable(boolean availability) throws NoSuchElementException {
+        stations.stream()
+                .filter(station -> station.isAvailable() != availability)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new)
+                .setAvailable(availability);
+    }
+
     // ******************************** handlers *****************************
 
     /**
@@ -119,7 +134,6 @@ public class StationNameWatcher implements AvailabilityWatcher {
      * @param newValue
      *         the new boolean value in the property
      */
-    @SuppressWarnings("unused")
     private void handleAvailableChangeEvent_UpdateFormattedAmount(ObservableValue<? extends Boolean> observableValue,
                                                                   Boolean oldValue,
                                                                   Boolean newValue) {
@@ -147,6 +161,11 @@ public class StationNameWatcher implements AvailabilityWatcher {
                                                              station));
         }
         station.availableProperty().addListener(availableChangeListener);
+    }
+
+    @Override
+    public String toString() {
+        return getStationName();
     }
 
     //todo: create factory method to call constructor and then initialize everything.

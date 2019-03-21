@@ -8,18 +8,20 @@ import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
 import javafx.collections.ObservableList;
 
+import java.util.NoSuchElementException;
+
 /**
  * Watches the values within the elements of the equipment list for changes and then updates it's own properties
  * accordingly. Each watcher should only observe over a specific kind of a model, i.e. all models share the same name.
  * <p>
- * Specifically, this watcher watches for changes to the equipment availability and then reports a table friendly
- * amount string.
+ * Specifically, this watcher watches for changes to the equipment availability and then reports a table friendly amount
+ * string.
  */
-public class EquipmentNameWatcher implements AvailabilityWatcher {
-    private ObservableList<Equipment>   equipments;
-    private StringProperty              equipmentName;
-    private StringProperty              formattedAmount;
-    private ChangeListener<Boolean> availableChangeListener = createChangeListener();
+public class EquipmentWatcher implements AvailabilityWatcher {
+    private ObservableList<Equipment> equipments;
+    private StringProperty            equipmentName;
+    private StringProperty            formattedAmount;
+    private ChangeListener<Boolean>   availableChangeListener = createChangeListener();
 
     // ************************ initializers, creators **********************************
 
@@ -33,7 +35,8 @@ public class EquipmentNameWatcher implements AvailabilityWatcher {
      * @throws IllegalArgumentException
      *         if a station in `stations` has a mismatching station name to the watcher
      */
-    public EquipmentNameWatcher(ObservableList<Equipment> equipments, String equipmentName) throws IllegalArgumentException {
+    public EquipmentWatcher(ObservableList<Equipment> equipments, String equipmentName) throws
+                                                                                        IllegalArgumentException {
         this.equipments = equipments;
         //this.equipments.forEach(this::addWeakStationListener);
         this.equipmentName = new SimpleStringProperty(this, "equipmentName", equipmentName);
@@ -100,6 +103,24 @@ public class EquipmentNameWatcher implements AvailabilityWatcher {
         return equipments.size();
     }
 
+    /**
+     * An API method that helps treat the equipment pool as a single entity. Flips the availability property of a single
+     * equipable within the pool, essentially decrementing or incrementing the number of equipment available in this
+     * pool.
+     *
+     * @param availability
+     *         the availability value to change the station's property to
+     * @throws NoSuchElementException
+     *         if all stations in the pool have the same availability as the one supplied
+     */
+    void setAvailable(boolean availability) throws NoSuchElementException {
+        equipments.stream()
+                  .filter(station -> station.isAvailable() != availability)
+                  .findFirst()
+                  .orElseThrow(NoSuchElementException::new)
+                  .setAvailable(availability);
+    }
+
     // **************************** handlers **************************************
 
     @SuppressWarnings("unused")
@@ -118,5 +139,10 @@ public class EquipmentNameWatcher implements AvailabilityWatcher {
                     equipment));
         }
         equipment.availableProperty().addListener(availableChangeListener);
+    }
+
+    @Override
+    public String toString() {
+        return getEquipmentName();
     }
 }

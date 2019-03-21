@@ -17,7 +17,7 @@ public class Request {
     private final ReadOnlyIntegerProperty         banner;
     private final ReadOnlyStringProperty          name;
     private final ReadOnlyStringProperty          stationName;
-    private final ReadOnlyListProperty<Equipment> equipment;
+    private final ReadOnlyListProperty<String> equipment;
     private final ReadOnlyIntegerProperty         creationTime; // added for reporting purposes
 
     // mutable properties
@@ -27,7 +27,7 @@ public class Request {
     private final transient StringProperty equipmentString;
     private final transient StringProperty timerString;
 
-    private Request(Integer banner, String name, String stationName, ObservableList<Equipment> equipment) {
+    private Request(Integer banner, String name, String stationName, ObservableList<String> equipment) {
         this.banner = new ReadOnlyIntegerWrapper(this, "banner", banner);
         this.name = new ReadOnlyStringWrapper(this, "name", name);
         this.stationName = new ReadOnlyStringWrapper(this, "stationName", stationName);
@@ -43,10 +43,10 @@ public class Request {
     public static Request initRequest(Integer banner,
                                       String name,
                                       String stationName,
-                                      ObservableList<Equipment> equipment,
-                                      Integer timer) {
+                                      ObservableList<String> equipment) {
+
         Request request = new Request(banner, name, stationName, equipment);
-        request.timer.setValue(timer);
+        request.timer.setValue(LocalTime.now().plus(DEFAULT_START_MINUTES).toSecondOfDay()); //todo:  need to have this handled by the waitlist wrapper instead
         request.timerString.setValue(request.createTimerString());
         request.equipmentString.setValue(request.createEquipmentString());
         return request;
@@ -54,7 +54,7 @@ public class Request {
 
     private String createEquipmentString() {
         StringBuilder sb = new StringBuilder();
-        for (Equipment e : equipment) { sb.append(e.getEquipmentName()).append("\n"); }
+        for (String e : equipment) { sb.append(e).append("\n"); }
         return sb.toString();
     }
 
@@ -90,11 +90,11 @@ public class Request {
         return stationName;
     }
 
-    public ObservableList<Equipment> getEquipment() {
+    public ObservableList<String> getEquipment() {
         return equipment.get();
     }
 
-    public ReadOnlyListProperty<Equipment> equipmentProperty() {
+    public ReadOnlyListProperty<String> equipmentProperty() {
         return equipment;
     }
 
