@@ -32,8 +32,18 @@ public class EquipmentContainer {
         mockSmash.add(Equipment.equipmentFactory("Smash Bro."));
         ObservableList<Equipment> smash  = new ObservableListWrapper<>(mockSmash);
         EquipmentWatcher          smashW = new EquipmentWatcher(smash, "Smash");
+        
+        List<Equipment> mockStick= new ArrayList<>();
+        mockStick.add(Equipment.equipmentFactory("Pool Stick"));
+        ObservableList<Equipment> stick  = new ObservableListWrapper<>(mockStick);
+        EquipmentWatcher          stickW = new EquipmentWatcher(stick, "Pool Stick");
+        
+        List<Equipment> mockPaddle= new ArrayList<>();
+        mockPaddle.add(Equipment.equipmentFactory("Paddle"));
+        ObservableList<Equipment> paddle  = new ObservableListWrapper<>(mockPaddle);
+        EquipmentWatcher          paddleW = new EquipmentWatcher(paddle, "Paddle");
 
-        equipmentWatchers.addAll(smashW);
+        equipmentWatchers.addAll(smashW, stickW, paddleW);
     }
 
     public static EquipmentContainer getInstance() {

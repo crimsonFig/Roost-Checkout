@@ -101,7 +101,7 @@ public class HomeController implements Initializable {
 
     private void loadMock() {
         tvSession.setItems(FXCollections.observableArrayList(Session.initSession(2138743,
-                                                                                 "triston",
+                                                                                 "Triston",
                                                                                  "Pool",
                                                                                  FXCollections.observableArrayList(
                                                                                          "Sticks")),
@@ -109,10 +109,15 @@ public class HomeController implements Initializable {
                                                                                  "Hugo",
                                                                                  "TV",
                                                                                  FXCollections.observableArrayList(
-                                                                                         "Game"))));
+                                                                                         "Game")),
+        													Session.initSession(4235163,
+                                                                                 "Nick",
+                                                                                 "Ping Pong Table",
+                                                                                 FXCollections.observableArrayList(
+                                                                                         "Paddle"))));
 
         tvWaitlist.setItems(FXCollections.observableArrayList(Request.initRequest(2138743,
-                                                                                  "triston",
+                                                                                  "Triston",
                                                                                   "Pool",
                                                                                   FXCollections.observableArrayList(
                                                                                           "Sticks"))));
