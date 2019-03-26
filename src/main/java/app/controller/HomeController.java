@@ -1,15 +1,9 @@
 package app.controller;
 
-import java.net.URL;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ResourceBundle;
-
 import app.container.RequestContainer;
-import app.model.Equipment;
+import app.container.SessionContainer;
 import app.model.Request;
 import app.model.Session;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -18,6 +12,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(HomeController.class);
@@ -33,7 +30,7 @@ public class HomeController implements Initializable {
         tcWaitlistTimer.setCellValueFactory(e -> e.getValue().timerStringProperty());
         tcWaitlistStation.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcWaitlistEquip.setCellValueFactory(e -> e.getValue().equipmentStringProperty());
-        tcWaitlistButtons.setCellValueFactory(new PropertyValueFactory<>("DUMMY VALUE"));
+        tcWaitlistButtons.setCellValueFactory(new PropertyValueFactory<>("DUMMY VALUE")); //todo: replace with waitlist property 'canAccept'(that depends on station/eq availabilityIntegerProperty) and remove alert
         tcWaitlistButtons.setCellFactory(param -> new TableCell<Request, String>() {
             final Button acceptBtn = new Button("accept");
             final Button leaveBtn = new Button("leave");
@@ -51,7 +48,10 @@ public class HomeController implements Initializable {
                     HBox.setHgrow(leaveBtn, Priority.ALWAYS);
                     buttons.setMaxWidth(Double.MAX_VALUE);
                     setGraphic(buttons);
-                    acceptBtn.setOnAction(e -> {/* transaction for moving from waitlist to session */});
+                    acceptBtn.setOnAction(e -> {
+                        /* todo: transaction for moving from waitlist to session */
+                        RequestContainer.getInstance().checkOutWaitlist(param.getTableView().getItems().get(getIndex()));
+                    });
                     leaveBtn.setOnAction(e -> RequestContainer.getInstance()
                                                               .removeFromWaitlist(param.getTableView()
                                                                                        .getItems()
@@ -66,7 +66,7 @@ public class HomeController implements Initializable {
         tcSessionStation.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcSessionEquip.setCellValueFactory(e -> e.getValue().equipmentStringProperty());
         tcSessionTimer.setCellValueFactory(e -> e.getValue().timerStringProperty());
-        tcSessionButtons.setCellValueFactory(new PropertyValueFactory<>("DUMMY VALUE"));
+        tcSessionButtons.setCellValueFactory(e -> e.getValue().timerStringProperty()); //todo: replace with a better trigger (ideally, an integer property of the session's station availability number. if n<0 then cant refresh)
         tcSessionButtons.setCellFactory(param -> new TableCell<Session, String>() {
             final Button refreshBtn = new Button("refresh");
 
@@ -86,41 +86,19 @@ public class HomeController implements Initializable {
                     setGraphic(refreshBtn);
                     refreshBtn.setOnAction((waitlistExists)
                                            ? (e -> {/* do nothing */})
-                                           : (e -> param.getTableView().getItems().get(getIndex()).refreshTimer()));
+                                           : (e -> SessionContainer.getInstance()
+                                                                   .refreshSessionTimer(param.getTableView()
+                                                                                             .getItems()
+                                                                                             .get(getIndex()))));
                 }
             }
         });
 
         try {
-            loadMock();
-
+            tvSession.setItems(SessionContainer.getInstance().getSessions());
+            tvWaitlist.setItems(RequestContainer.getInstance().getWaitListedRequests());
         } catch (Exception e) {
             LOGGER.catching(e);
         }
     }
-
-    private void loadMock() {
-        tvSession.setItems(FXCollections.observableArrayList(Session.initSession(2138743,
-                                                                                 "Triston",
-                                                                                 "Pool",
-                                                                                 FXCollections.observableArrayList(
-                                                                                         "Sticks")),
-                                                             Session.initSession(4235163,
-                                                                                 "Hugo",
-                                                                                 "TV",
-                                                                                 FXCollections.observableArrayList(
-                                                                                         "Game")),
-        													Session.initSession(4235163,
-                                                                                 "Nick",
-                                                                                 "Ping Pong Table",
-                                                                                 FXCollections.observableArrayList(
-                                                                                         "Paddle"))));
-
-        tvWaitlist.setItems(FXCollections.observableArrayList(Request.initRequest(2138743,
-                                                                                  "Triston",
-                                                                                  "Pool",
-                                                                                  FXCollections.observableArrayList(
-                                                                                          "Sticks"))));
-    }
-
 }

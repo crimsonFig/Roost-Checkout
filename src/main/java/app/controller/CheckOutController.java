@@ -1,8 +1,6 @@
 package app.controller;
 
 import app.container.*;
-import app.model.Equipment;
-import app.model.Request;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,8 +22,8 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     private static final Logger LOGGER = LogManager.getLogger(NoticeController.class);
 
     private static final ViewStrategy.TrayViewConfigStrategy VIEW_CONFIG_STRATEGY = ViewStrategy.PURE_TRAY_VIEWS.CHECK_OUT;
-    private static final String SUBMIT_LABEL = "submit";
-    private static final String WAITLIST_LABEL = "waitlist";
+    private static final String                              SUBMIT_LABEL         = "submit";
+    private static final String                              WAITLIST_LABEL       = "waitlist";
 
     @FXML private Pane                       rootNode;
     @FXML private TextField                  tfBannerID;
@@ -64,8 +62,10 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     private void handleEquipmentSelection(Event event) {
         //check watchers if station and equipment selected have at least one available each
         if (event.getEventType().equals(ComboBox.ON_HIDDEN)) {
-            if (StationContainer.getInstance().isAvailable(cbStation.getSelectionModel().getSelectedItem().getStationName()) &&
-                EquipmentContainer.getInstance().isAvailable(cbEquipment.getSelectionModel().getSelectedItem().getEquipmentName())) {
+            if (StationContainer.getInstance()
+                                .isAvailable(cbStation.getSelectionModel().getSelectedItem().getName()) &&
+                EquipmentContainer.getInstance()
+                                  .isAvailable(cbEquipment.getSelectionModel().getSelectedItem().getName())) {
 
                 submitButton.setText(SUBMIT_LABEL);
             } else {
@@ -77,15 +77,17 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     @FXML
     private void handleSubmitAction(ActionEvent actionEvent) {
         try {
-            int rBanner = Integer.parseInt(tfBannerID.getText());
-            String rName = tfName.getText();
-            String rStationName = cbStation.getSelectionModel().getSelectedItem().getStationName();
-            ObservableList<String> rEquipmentNameList = FXCollections.observableArrayList(cbEquipment.getSelectionModel().getSelectedItem().getEquipmentName());
+            int    rBanner      = Integer.parseInt(tfBannerID.getText());
+            String rName        = tfName.getText();
+            String rStationName = cbStation.getValue().getName();
+            ObservableList<String> rEquipmentNameList = FXCollections.observableArrayList(cbEquipment.getSelectionModel()
+                                                                                                     .getSelectedItem()
+                                                                                                     .getName());
             RequestContainer.getInstance().checkOutRequest(rBanner, rName, rStationName, rEquipmentNameList);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-        
+
         ViewDirector.getViewDirector().handleCloseActiveView(this);
     }
 

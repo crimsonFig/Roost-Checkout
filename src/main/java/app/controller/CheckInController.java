@@ -42,7 +42,7 @@ public class CheckInController extends TrayViewLifecycleStrategy {
     private void handleSubmitAction(ActionEvent actionEvent) {
         // call session handler to check in session
         try {
-            SessionContainer.getInstance().checkInSession(SessionContainer.getInstance().getSession(Integer.parseInt(tfBannerID.getId())));
+            SessionContainer.getInstance().checkInSession(SessionContainer.getInstance().getSession(Integer.parseInt(tfBannerID.getText())));
         } catch (RuntimeException e) {
             e.printStackTrace();
         }

@@ -19,13 +19,28 @@ public class SessionContainer {
     private final ChangeListener<Boolean>     sessionActiveChangeListener;
 
     private SessionContainer() {
-        listAddChangeListener = new WeakListChangeListener<>(this::handleListAddChangeEvent_AddSessionListener);
-        sessionActiveChangeListener = new WeakChangeListener<>(this::handleSessionActiveChangeEvent_SessionRemoval);
+        listAddChangeListener = this::handleListAddChangeEvent_AddSessionListener;
+        sessionActiveChangeListener = this::handleSessionActiveChangeEvent_SessionRemoval;
     }
 
     private static SessionContainer initSessionContainer() {
         SessionContainer sessionContainer = new SessionContainer();
-        sessionContainer.addListChangeListener(sessionContainer.listAddChangeListener);
+        sessionContainer.addListChangeListener(new WeakListChangeListener<>(sessionContainer.listAddChangeListener));
+
+        // todo: remove mock data
+        sessionContainer.sessions.addAll(Session.initSession(2138743,
+                                                             "Triston",
+                                                             "Pool",
+                                                             FXCollections.observableArrayList("Pool Stick")),
+                                         Session.initSession(7534624,
+                                                             "Hugo Martinez",
+                                                             "TV",
+                                                             FXCollections.observableArrayList("Smash")),
+                                         Session.initSession(4235163,
+                                                             "Nick",
+                                                             "Ping Pong Table",
+                                                             FXCollections.observableArrayList("Paddle")));
+
         return sessionContainer;
     }
 
@@ -34,10 +49,6 @@ public class SessionContainer {
             instance = initSessionContainer();
         }
         return instance;
-    }
-
-    public ChangeListener<Boolean> getSessionActiveChangeListener() {
-        return sessionActiveChangeListener;
     }
 
     public ObservableList<Session> getSessions() {
@@ -77,11 +88,15 @@ public class SessionContainer {
         // * the session object should call it's init factory method
         // * * init factory method lets constructor finish in case of constructor failure and then
         // * * get station and equipable objects from request and ask the respective containers to make them unavailable
-        Session newSession = Session.initSession(request.getBanner(), request.getName(), request.getStationName(), request.getEquipment());
+        Session newSession = Session.initSession(request.getBanner(),
+                                                 request.getName(),
+                                                 request.getStationName(),
+                                                 request.getEquipment());
 
         // this is done explicitly here to ensure that a session can lock the station and equipment first before adding it to the list
         try {
-            StationContainer.getInstance().requestSetAvail(newSession.getStationName(), false); //make sure the request methods can roll back changes if an issue was caught.
+            // todo - make sure the request methods can roll back changes if an issue was caught.
+            StationContainer.getInstance().requestSetAvail(newSession.getStationName(), false);
             EquipmentContainer.getInstance().requestSetAvail(newSession.getEquipmentNames(), false);
         } catch (RequestFailure e) {
             // todo - throw issue up. pref to a controller than can display a custom alert
@@ -97,7 +112,13 @@ public class SessionContainer {
     }
 
     private <S extends Session> void handleListAddChangeEvent_AddSessionListener(ListChangeListener.Change<S> change) {
-        change.getAddedSubList().forEach(session -> session.activeProperty().addListener(sessionActiveChangeListener));
+        while (change.next()) {
+            if (change.wasAdded()) {
+                change.getAddedSubList()
+                      .forEach(session -> session.activeProperty()
+                                                 .addListener(new WeakChangeListener<>(sessionActiveChangeListener)));
+            }
+        }
     }
 
     private <B extends Boolean> void handleSessionActiveChangeEvent_SessionRemoval(ObservableValue<B> observable,

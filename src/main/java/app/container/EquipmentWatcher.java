@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WeakChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.NoSuchElementException;
@@ -18,33 +18,37 @@ import java.util.NoSuchElementException;
  * string.
  */
 public class EquipmentWatcher implements AvailabilityWatcher {
-    private ObservableList<Equipment> equipments;
-    private StringProperty            equipmentName;
-    private StringProperty            formattedAmount;
-    private ChangeListener<Boolean>   availableChangeListener = createChangeListener();
+    private       ObservableList<Equipment> equipments;
+    private       StringProperty            name;
+    private       StringProperty            formattedAmount;
+    private final ChangeListener<Boolean>   availableChangeListener;
 
     // ************************ initializers, creators **********************************
 
     /**
      * Creates a new watcher for equipments sharing the same name.
      *
-     * @param equipments
-     *         the equipments to initialize the watcher with; list is allowed to be empty.
-     * @param equipmentName
-     *         the name of the equipment. should be supplied using the equipmentName property.
+     * @param name
+     *         the name of the equipment. should be supplied using the name property.
      * @throws IllegalArgumentException
      *         if a station in `stations` has a mismatching station name to the watcher
      */
-    public EquipmentWatcher(ObservableList<Equipment> equipments, String equipmentName) throws
-                                                                                        IllegalArgumentException {
-        this.equipments = equipments;
-        //this.equipments.forEach(this::addWeakStationListener);
-        this.equipmentName = new SimpleStringProperty(this, "equipmentName", equipmentName);
+    private EquipmentWatcher(String name) throws IllegalArgumentException {
+        this.equipments = FXCollections.observableArrayList();
+        this.name = new SimpleStringProperty(this, "name", name);
         this.formattedAmount = new SimpleStringProperty(this, "formattedAmount", createFormattedAmount());
+        this.availableChangeListener = this::handleAvailableChangeEvent_UpdateFormattedAmount;
     }
 
-    private ChangeListener<Boolean> createChangeListener() {
-        return new WeakChangeListener<Boolean>(this::handleAvailableChangeEvent);
+    static EquipmentWatcher initWatcher(ObservableList<Equipment> list, String name) {
+        EquipmentWatcher watcher = new EquipmentWatcher(name);
+        list.forEach(watcher::addEquipment);
+        watcher.setFormattedAmount(watcher.createFormattedAmount()); //todo: will need to create a list listener to update amount
+        return watcher;
+    }
+
+    static EquipmentWatcher initWatcher(String name) {
+        return new EquipmentWatcher(name);
     }
 
     private String createFormattedAmount() {
@@ -58,25 +62,31 @@ public class EquipmentWatcher implements AvailabilityWatcher {
     }
 
     /**
-     * preferred way of adding a station to the observer list, instead of directly. adds a listener to the list.
+     * Adds an equipment to the list after validating and applying a listener
      *
      * @param equipment
-     *         the station to be added with a listener
+     *         the equipment to be added with a listener
      * @return true if the station was successfully added
      */
     public boolean addEquipment(Equipment equipment) {
-        addWeakStationListener(equipment);
+        if (equipment == null || !getName().equals(equipment.getEquipmentName())) {
+            throw new IllegalArgumentException(String.format("Equipment '%s' does not match this watcher's name: %s",
+                                                             (equipment == null) ? "" : equipment.getEquipmentName(),
+                                                             getName()));
+        }
+        equipment.availableProperty().addListener(availableChangeListener);
         return equipments.add(equipment);
     }
 
     ////// equipment name property
 
-    public String getEquipmentName() {
-        return equipmentName.get();
+    public String getName() {
+        return name.get();
     }
 
-    public StringProperty equipmentNameProperty() {
-        return equipmentName;
+    @Override
+    public StringProperty nameProperty() {
+        return name;
     }
 
     ////// formatted amount property
@@ -85,20 +95,23 @@ public class EquipmentWatcher implements AvailabilityWatcher {
         return formattedAmount.get();
     }
 
+    @Override
     public StringProperty formattedAmountProperty() {
         return formattedAmount;
     }
 
-    public void setFormattedAmount(String formattedAmount) {
+    private void setFormattedAmount(String formattedAmount) {
         this.formattedAmount.set(formattedAmount);
     }
 
     ////// pseudo availability getters
 
+    @Override
     public int getCurrentAvailable() {
         return equipments.stream().filter(Equipment::isAvailable).mapToInt(element -> 1).sum();
     }
 
+    @Override
     public Integer getTotalAmount() {
         return equipments.size();
     }
@@ -115,7 +128,7 @@ public class EquipmentWatcher implements AvailabilityWatcher {
      */
     void setAvailable(boolean availability) throws NoSuchElementException {
         equipments.stream()
-                  .filter(station -> station.isAvailable() != availability)
+                  .filter(equipment -> equipment.isAvailable() != availability)
                   .findFirst()
                   .orElseThrow(NoSuchElementException::new)
                   .setAvailable(availability);
@@ -123,26 +136,27 @@ public class EquipmentWatcher implements AvailabilityWatcher {
 
     // **************************** handlers **************************************
 
-    @SuppressWarnings("unused")
-    private void handleAvailableChangeEvent(ObservableValue<? extends Boolean> observableValue,
-                                            Boolean oldValue,
-                                            Boolean newValue) {
+    /**
+     * handles the change event created by the equipment's available property. updates the formatted amount string when
+     * said property changes.
+     *
+     * @param observableValue
+     *         the observable object (the available property object)
+     * @param oldValue
+     *         the old boolean value in the property
+     * @param newValue
+     *         the new boolean value in the property
+     */
+    private void handleAvailableChangeEvent_UpdateFormattedAmount(ObservableValue<? extends Boolean> observableValue,
+                                                                  Boolean oldValue,
+                                                                  Boolean newValue) {
         setFormattedAmount(createFormattedAmount());
     }
 
     // **************************** utility *******************************************
 
-    private void addWeakStationListener(Equipment equipment) {
-        if (!equipment.getEquipmentName().equals(this.getEquipmentName())) {
-            throw new IllegalArgumentException(String.format(
-                    "Equipment '%s' does not match this watcher's equipmentKind",
-                    equipment));
-        }
-        equipment.availableProperty().addListener(availableChangeListener);
-    }
-
     @Override
     public String toString() {
-        return getEquipmentName();
+        return getName();
     }
 }

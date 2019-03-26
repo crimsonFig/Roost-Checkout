@@ -3,17 +3,15 @@ package app.container;
 import app.model.Equipment;
 import app.model.Session;
 import app.util.exception.RequestFailure;
-import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WeakChangeListener;
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 public class EquipmentContainer {
@@ -21,29 +19,12 @@ public class EquipmentContainer {
     private static       EquipmentContainer instance;
 
     private final ObservableList<EquipmentWatcher> equipmentWatchers = FXCollections.observableArrayList();
-    private final ListChangeListener<Session>      sessionListAddChangeListener;
-    private final ChangeListener<Boolean>          sessionActiveChangeListener;
+    private final ListChangeListener<Session>      sessionListListener;
+    private final ChangeListener<Boolean>          sessionActiveListener;
 
     private EquipmentContainer() {
-        sessionActiveChangeListener = new WeakChangeListener<>(this::handleSessionActiveChangeEvent_updateStationAvail);
-        sessionListAddChangeListener = new WeakListChangeListener<>(this::handleListAddChangeEvent_AddSessionListener);
-
-        List<Equipment> mockSmash = new ArrayList<>();
-        mockSmash.add(Equipment.equipmentFactory("Smash Bro."));
-        ObservableList<Equipment> smash  = new ObservableListWrapper<>(mockSmash);
-        EquipmentWatcher          smashW = new EquipmentWatcher(smash, "Smash");
-        
-        List<Equipment> mockStick= new ArrayList<>();
-        mockStick.add(Equipment.equipmentFactory("Pool Stick"));
-        ObservableList<Equipment> stick  = new ObservableListWrapper<>(mockStick);
-        EquipmentWatcher          stickW = new EquipmentWatcher(stick, "Pool Stick");
-        
-        List<Equipment> mockPaddle= new ArrayList<>();
-        mockPaddle.add(Equipment.equipmentFactory("Paddle"));
-        ObservableList<Equipment> paddle  = new ObservableListWrapper<>(mockPaddle);
-        EquipmentWatcher          paddleW = new EquipmentWatcher(paddle, "Paddle");
-
-        equipmentWatchers.addAll(smashW, stickW, paddleW);
+        sessionActiveListener = this::handleSessionActiveChangeEvent_updateStationAvail;
+        sessionListListener = this::handleListAddChangeEvent_AddSessionListener;
     }
 
     public static EquipmentContainer getInstance() {
@@ -54,9 +35,27 @@ public class EquipmentContainer {
     }
 
     private static EquipmentContainer initStationContainer() {
-        EquipmentContainer equipmentContainer = new EquipmentContainer();
-        SessionContainer.getInstance().addListChangeListener(equipmentContainer.sessionListAddChangeListener);
-        return equipmentContainer;
+        EquipmentContainer container = new EquipmentContainer();
+        SessionContainer.getInstance().addListChangeListener(container.sessionListListener);
+
+        // todo: remove mock data and place into test instead
+        ObservableList<Equipment> smash = FXCollections.observableArrayList(Equipment.equipmentFactory("Smash"),
+                                                                            Equipment.equipmentFactory("Smash"),
+                                                                            Equipment.equipmentFactory("Smash"),
+                                                                            Equipment.equipmentFactory("Smash"),
+                                                                            Equipment.equipmentFactory("Smash"));
+        ObservableList<Equipment> stick = FXCollections.observableArrayList(Equipment.equipmentFactory("Pool Stick"),
+                                                                            Equipment.equipmentFactory("Pool Stick"));
+        ObservableList<Equipment> paddle = FXCollections.observableArrayList(Equipment.equipmentFactory("Paddle"),
+                                                                             Equipment.equipmentFactory("Paddle"),
+                                                                             Equipment.equipmentFactory("Paddle"));
+
+        EquipmentWatcher smashW  = EquipmentWatcher.initWatcher(smash, "Smash");
+        EquipmentWatcher stickW  = EquipmentWatcher.initWatcher(stick, "Pool Stick");
+        EquipmentWatcher paddleW = EquipmentWatcher.initWatcher(paddle, "Paddle");
+        container.equipmentWatchers.addAll(smashW, stickW, paddleW);
+
+        return container;
     }
 
     public ObservableList<EquipmentWatcher> getEquipmentWatchers() {
@@ -65,19 +64,25 @@ public class EquipmentContainer {
 
     public EquipmentWatcher getEquipmentWatcherByName(String equipmentName) {
         return equipmentWatchers.stream()
-                                .filter(equipmentWatcher -> equipmentWatcher.getEquipmentName().equals(equipmentName))
+                                .filter(equipmentWatcher -> equipmentWatcher.getName().equals(equipmentName))
                                 .findFirst()
                                 .orElseThrow(NoSuchElementException::new);
     }
 
     private <S extends Session> void handleListAddChangeEvent_AddSessionListener(ListChangeListener.Change<S> change) {
-        change.getAddedSubList().forEach(session -> session.activeProperty().addListener(sessionActiveChangeListener));
+        while (change.next()) {
+            if (change.wasAdded()) {
+                change.getAddedSubList()
+                      .forEach(session -> session.activeProperty().addListener(sessionActiveListener));
+            }
+        }
+
     }
 
     private <B extends Boolean> void handleSessionActiveChangeEvent_updateStationAvail(ObservableValue<B> observable,
                                                                                        Boolean wasActive,
                                                                                        Boolean isActive) {
-        if (wasActive && !isActive && observable.getClass().isInstance(BooleanProperty.class)) {
+        if (wasActive && !isActive && BooleanProperty.class.isAssignableFrom(observable.getClass())) {
             BooleanProperty        activeProperty          = (BooleanProperty) observable;
             ObservableList<String> equipmentObservableList = ((Session) activeProperty.getBean()).getEquipmentNames();
             try {
@@ -93,7 +98,7 @@ public class EquipmentContainer {
     void requestSetAvail(ObservableList<String> equipment, boolean newAvailability) {
         try {
             for (String equipableName : equipment) {
-                getEquipmentWatcherByName(equipableName).setAvailable(true);
+                getEquipmentWatcherByName(equipableName).setAvailable(newAvailability);
             }
         } catch (NoSuchElementException e) {
             throw new RequestFailure(e);
