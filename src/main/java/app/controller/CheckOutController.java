@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.container.*;
+import app.model.Station;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,18 +26,18 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     private static final String                              SUBMIT_LABEL         = "submit";
     private static final String                              WAITLIST_LABEL       = "waitlist";
 
-    @FXML private Pane                       rootNode;
-    @FXML private TextField                  tfBannerID;
-    @FXML private TextField                  tfName;
-    @FXML private ComboBox<StationWatcher>   cbStation;
-    @FXML private ComboBox<EquipmentWatcher> cbEquipment;
-    @FXML private Button                     submitButton;
+    @FXML private Pane                          rootNode;
+    @FXML private TextField                     tfBannerID;
+    @FXML private TextField                     tfName;
+    @FXML private ComboBox<AvailabilityWatcher> cbStation;
+    @FXML private ComboBox<AvailabilityWatcher> cbEquipment;
+    @FXML private Button                        submitButton;
     //todo: add a 'waitlist estimate' label next to button
 
     @FXML
     private void initialize() {
         //get station list from station container and populate cbStation
-        cbStation.setItems(StationContainer.getInstance().getStationWatchers());
+        cbStation.setItems(StationContainer.getInstance().getWatchers());
         cbStation.setCellFactory(ComboBoxListCell.forListView());
     }
 
@@ -44,15 +45,15 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     private void handleStationSelection(Event event) {
         //get equipable list from station's type
         if (event.getEventType().equals(ComboBox.ON_HIDDEN)) {
-            List<EquipmentWatcher> items = cbStation.getSelectionModel()
-                                                    .getSelectedItem()
-                                                    .getStations()
-                                                    .get(0)
-                                                    .getEquipmentGroups()
-                                                    .stream()
-                                                    .map(eName -> EquipmentContainer.getInstance()
-                                                                                    .getEquipmentWatcherByName(eName.get()))
-                                                    .collect(Collectors.toList());
+            List<AvailabilityWatcher> items = Station.class.cast(cbStation.getSelectionModel()
+                                                                          .getSelectedItem()
+                                                                          .getItems()
+                                                                          .get(0))
+                                                           .getEquipable()
+                                                           .stream()
+                                                           .map(eName -> EquipmentContainer.getInstance()
+                                                                                           .getWatcherByName(eName.get()))
+                                                           .collect(Collectors.toList());
             cbEquipment.setItems(FXCollections.observableList(items));
             cbEquipment.setDisable(false);
         }
@@ -62,8 +63,7 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     private void handleEquipmentSelection(Event event) {
         //check watchers if station and equipment selected have at least one available each
         if (event.getEventType().equals(ComboBox.ON_HIDDEN)) {
-            if (StationContainer.getInstance()
-                                .isAvailable(cbStation.getSelectionModel().getSelectedItem().getName()) &&
+            if (StationContainer.getInstance().isAvailable(cbStation.getSelectionModel().getSelectedItem().getName()) &&
                 EquipmentContainer.getInstance()
                                   .isAvailable(cbEquipment.getSelectionModel().getSelectedItem().getName())) {
 

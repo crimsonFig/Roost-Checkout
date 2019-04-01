@@ -15,16 +15,16 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
     @FXML private VBox      rootNode;
     @FXML private ImageView ivLogo;
 
-    @FXML private TableView<StationWatcher>           tvStationsAvailability;
-    @FXML private TableColumn<StationWatcher, String> tcStationName, tcStationAmount, tcStationAvailability;
+    @FXML private TableView<AvailabilityWatcher>           tvStationsAvailability;
+    @FXML private TableColumn<AvailabilityWatcher, String> tcStationName, tcStationAmount, tcStationAvailability;
 
-    @FXML private TableView<EquipmentWatcher>           tvEquipAvailability;
-    @FXML private TableColumn<EquipmentWatcher, String> tcEquipName, tcEquipAmount, tcEquipAvailability;
+    @FXML private TableView<AvailabilityWatcher>           tvEquipAvailability;
+    @FXML private TableColumn<AvailabilityWatcher, String> tcEquipName, tcEquipAmount, tcEquipAvailability;
 
     @FXML
     private void initialize() {
-        tvStationsAvailability.setItems(StationContainer.getInstance().getStationWatchers());
-        tvEquipAvailability.setItems(EquipmentContainer.getInstance().getEquipmentWatchers());
+        tvStationsAvailability.setItems(StationContainer.getInstance().getWatchers());
+        tvEquipAvailability.setItems(EquipmentContainer.getInstance().getWatchers());
         initAvailTable(tcStationName, tcStationAmount, tcStationAvailability);
         initAvailTable(tcEquipName, tcEquipAmount, tcEquipAvailability);
     }

@@ -17,8 +17,8 @@ public class NoticeContainer {
     // todo: create a change listener handler
 
     // todo: create a list of notice producers. should compose of notice dependencies plus some method based on event, timer or schedule.
-    // timer = notice gets created after X amount of time passes,
-    // event = notice gets created from an actionEvent or changeListener,
+    // timer = notice gets created after X amount of time passes, should call createNotice(duration, msg)
+    // event = notice gets created from an actionEvent or changeListener, should call a simple createNotice(msg)
     // schedule = notice gets created when the current time equals or passes a determined time or date. i.e. a cron job.
 
     private NoticeContainer() {

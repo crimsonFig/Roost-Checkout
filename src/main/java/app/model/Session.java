@@ -1,11 +1,11 @@
 package app.model;
 
+import javafx.beans.property.*;
+import javafx.collections.ObservableList;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAmount;
-
-import javafx.beans.property.*;
-import javafx.collections.ObservableList;
 
 public class Session {
     private static final TemporalAmount DEFAULT_START_MINUTES   = Duration.ofMinutes(30);
@@ -22,6 +22,7 @@ public class Session {
     // mutable properties
     private final IntegerProperty timer;    // the time at when the session should end. "refreshable".
     private final BooleanProperty active;   // state of if the session is active
+    private final BooleanProperty refreshable;
 
     // properties formatted as string (for external class listeners)
     private final transient StringProperty equipmentString;
@@ -38,6 +39,7 @@ public class Session {
         this.equipmentNames = new ReadOnlyListWrapper<>(this, "equipmentNames", equipmentNames);
 
         this.active = new SimpleBooleanProperty(this, "active", Boolean.TRUE);
+        this.refreshable = new SimpleBooleanProperty(this, "refreshable", Boolean.TRUE);
         this.timer = new SimpleIntegerProperty(this,
                                                "timer",
                                                LocalTime.now().plus(DEFAULT_START_MINUTES).toSecondOfDay());
@@ -130,5 +132,13 @@ public class Session {
 
     public BooleanProperty activeProperty() {
         return active;
+    }
+
+    private boolean isRefreshable() {
+        return refreshable.get();
+    }
+
+    public BooleanProperty refreshableProperty() {
+        return refreshable;
     }
 }
