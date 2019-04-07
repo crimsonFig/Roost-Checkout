@@ -48,7 +48,7 @@ public class Station extends Requestable {
     // ******************************* method factories ******************************
 
     public static Station stationFactory(String stationName) {
-        return StationFactory.initStation(new Station(stationName));
+        return new Station(stationName);
     }
 
     public static Station stationFactory(String stationName, String... equipmentNames) {

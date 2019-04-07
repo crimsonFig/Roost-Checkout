@@ -6,13 +6,11 @@ package app.model;
  * generic kind. these properties are made in mind with an inventory system for classification being easier to manage.
  */
 public class Equipment extends Requestable {
-
     private Equipment(String name) {
         super(name);
     }
 
     public static Equipment equipmentFactory(String equipmentName) {
-        return EquipmentFactory.initFactory(new Equipment(equipmentName));
+        return new Equipment(equipmentName);
     }
-
 }

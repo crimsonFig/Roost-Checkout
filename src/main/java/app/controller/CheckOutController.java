@@ -44,7 +44,7 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     @FXML
     private void handleStationSelection(Event event) {
         //get equipable list from station's type
-        if (event.getEventType().equals(ComboBox.ON_HIDDEN)) {
+        if (event.getEventType().equals(ComboBox.ON_HIDDEN) && !cbStation.getSelectionModel().isEmpty()) {
             List<AvailabilityWatcher> items = Station.class.cast(cbStation.getSelectionModel()
                                                                           .getSelectedItem()
                                                                           .getItems()
@@ -62,7 +62,7 @@ public class CheckOutController extends TrayViewLifecycleStrategy {
     @FXML
     private void handleEquipmentSelection(Event event) {
         //check watchers if station and equipment selected have at least one available each
-        if (event.getEventType().equals(ComboBox.ON_HIDDEN)) {
+        if (event.getEventType().equals(ComboBox.ON_HIDDEN) && !cbEquipment.getSelectionModel().isEmpty()) {
             if (StationContainer.getInstance().isAvailable(cbStation.getSelectionModel().getSelectedItem().getName()) &&
                 EquipmentContainer.getInstance()
                                   .isAvailable(cbEquipment.getSelectionModel().getSelectedItem().getName())) {

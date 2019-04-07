@@ -7,138 +7,146 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAmount;
 
-public class Session {
-    private static final TemporalAmount DEFAULT_START_MINUTES   = Duration.ofMinutes(30);
-    private static final TemporalAmount DEFAULT_REFRESH_MINUTES = Duration.ofMinutes(30);
-    public static final  String         TIMER_IS_ZERO_MSG       = "done";
-    private static final String         TIMER_FORMAT            = "%2dm";
+/**
+ * A session model that wraps a request model in order to provide session functionality. A session model is meant to be
+ * used to hold a request object so that it can be checked out and provide restrictive access for checking out future
+ * requests. The model has a timer to countdown the session's playable time and a control property used to prevent a
+ * session from having their timer extended when others are waiting on the session's station.
+ *
+ * @see #timerStringProperty()
+ * @see #refreshableProperty()
+ */
+public class Session extends Timer implements RequestWrapper {
+    // constants
+    public static final TemporalAmount DEFAULT_START_MINUTES   = Duration.ofMinutes(5);
+    public static final TemporalAmount DEFAULT_REFRESH_MINUTES = Duration.ofMinutes(5);
 
     // immutable properties
-    private final ReadOnlyIntegerProperty      banner;
-    private final ReadOnlyStringProperty       name;
-    private final ReadOnlyStringProperty       stationName;
-    private final ReadOnlyListProperty<String> equipmentNames;
+    private final ReadOnlyObjectProperty<Request> request;
 
     // mutable properties
-    private final IntegerProperty timer;    // the time at when the session should end. "refreshable".
-    private final BooleanProperty active;   // state of if the session is active
-    private final BooleanProperty refreshable;
+    private final IntegerProperty timer;        // the time at when the session should end. "refreshable".
+    private final BooleanProperty refreshable;  // if the session can be refreshed
 
     // properties formatted as string (for external class listeners)
-    private final transient StringProperty equipmentString;
     private final transient StringProperty timerString;
 
-    // todo: consider transforming session to be structured as a "Request Wrapper/Decorator", which wraps a request, delegates
-    //  it's getters on desired exposure, and decorates the request with session specific helper properties.
-    //  this should have negligible impact to outside code due to the modular approach i've taken.
-    //  this would mirror closely to the WaitListedRequestWrapper for the WaitlistContainer
-    private Session(Integer banner, String name, String stationName, ObservableList<String> equipmentNames) {
-        this.banner = new ReadOnlyIntegerWrapper(this, "banner", banner);
-        this.name = new ReadOnlyStringWrapper(this, "name", name);
-        this.stationName = new ReadOnlyStringWrapper(this, "stationName", stationName);
-        this.equipmentNames = new ReadOnlyListWrapper<>(this, "equipmentNames", equipmentNames);
-
-        this.active = new SimpleBooleanProperty(this, "active", Boolean.TRUE);
-        this.refreshable = new SimpleBooleanProperty(this, "refreshable", Boolean.TRUE);
+    private Session(Request request, boolean refreshable) {
+        super();
+        this.request = new SimpleObjectProperty<>(this, "request", request);
+        this.refreshable = new SimpleBooleanProperty(this, "refreshable", refreshable);
         this.timer = new SimpleIntegerProperty(this,
                                                "timer",
                                                LocalTime.now().plus(DEFAULT_START_MINUTES).toSecondOfDay());
 
-        this.equipmentString = new SimpleStringProperty(this, "equipmentString");
-        this.timerString = new SimpleStringProperty(this, "timerString");
+        this.timerString = new SimpleStringProperty(this, "timerString", "-");
     }
 
-    public static Session initSession(Integer banner,
-                                      String name,
-                                      String stationName,
-                                      ObservableList<String> equipment) {
-        Session session = new Session(banner, name, stationName, equipment);
-        session.timerString.setValue(session.createTimerString());
-        session.equipmentString.setValue(session.createEquipmentString());
-        // todo: use Timeline to create a handler that updates the timerString every TIMER_UPDATE_PERIOD seconds
+    public static Session initSession(Request request, boolean refreshable) {
+        Session session = new Session(request, refreshable);
+        session.getClock().play();
         return session;
     }
 
-    private String createEquipmentString() {
-        StringBuilder sb = new StringBuilder();
-        for (String eName : equipmentNames) { sb.append(eName).append("\n"); }
-        return sb.toString();
-    }
-
-    private String createTimerString() {
-        LocalTime sessionEndTime = LocalTime.ofSecondOfDay(timer.longValue());
-        LocalTime currentTime    = LocalTime.now();
-        return (currentTime.isAfter(sessionEndTime))
-               ? TIMER_IS_ZERO_MSG
-               : String.format(TIMER_FORMAT, Duration.between(currentTime, sessionEndTime).toMinutes());
-    }
+    /* *********************************** EXTERNAL API ********************************************************** */
 
     public void refreshTimer() {
         timer.setValue(LocalTime.now().plus(DEFAULT_REFRESH_MINUTES).toSecondOfDay());
         timerString.setValue(createTimerString());
     }
 
+    // forwarded properties
+
+    @Override
     public int getBanner() {
-        return banner.get();
+        return request.get().getBanner();
     }
 
+    @Override
     public ReadOnlyIntegerProperty bannerProperty() {
-        return banner;
+        return request.get().bannerProperty();
     }
 
+    @Override
     public String getName() {
-        return name.get();
+        return request.get().getName();
     }
 
+    @Override
     public ReadOnlyStringProperty nameProperty() {
-        return name;
+        return request.get().nameProperty();
     }
 
+    @Override
     public String getStationName() {
-        return stationName.get();
+        return request.get().getStationName();
     }
 
+    @Override
     public ReadOnlyStringProperty stationNameProperty() {
-        return stationName;
+        return request.get().stationNameProperty();
     }
 
+    @Override
     public ObservableList<String> getEquipmentNames() {
-        return equipmentNames.get();
+        return request.get().getEquipmentNames();
     }
 
+    @Override
     public ReadOnlyListProperty<String> equipmentNamesProperty() {
-        return equipmentNames;
+        return request.get().equipmentNamesProperty();
     }
 
+    @Override
+    public int getCreationTime() {
+        return request.get().getCreationTime();
+    }
+
+    @Override
+    public ReadOnlyIntegerProperty creationTimeProperty() {
+        return request.get().creationTimeProperty();
+    }
+
+    @Override
     public String getEquipmentString() {
-        return equipmentString.get();
+        return request.get().getEquipmentString();
     }
 
-    public StringProperty equipmentStringProperty() {
-        return equipmentString;
+    @Override
+    public ReadOnlyStringProperty equipmentStringProperty() {
+        return request.get().equipmentStringProperty();
     }
 
-    public String getTimerString() {
-        return timerString.get();
+    // timer properties
+    public int getTimer() {
+        return timer.get();
     }
 
+    @Override
+    public IntegerProperty timerProperty() {
+        return timer;
+    }
+
+    @Override
     public StringProperty timerStringProperty() {
         return timerString;
     }
 
-    public boolean isActive() {
-        return active.get();
-    }
+    // session properties
 
-    public BooleanProperty activeProperty() {
-        return active;
-    }
-
-    private boolean isRefreshable() {
+    public boolean isRefreshable() {
         return refreshable.get();
     }
 
     public BooleanProperty refreshableProperty() {
         return refreshable;
+    }
+
+    public Request getRequest() {
+        return request.get();
+    }
+
+    public ReadOnlyObjectProperty<Request> requestProperty() {
+        return request;
     }
 }

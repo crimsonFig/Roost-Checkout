@@ -17,7 +17,7 @@ import java.nio.file.NoSuchFileException;
  * <li>Allowing </li>
  * </ul>
  */
-public class ViewStrategy {
+public abstract class ViewStrategy {
 
     /**
      * Interface that defines behavior for objects that can provide routing information of a view

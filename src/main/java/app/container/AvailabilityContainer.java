@@ -4,10 +4,11 @@ import app.util.exception.RequestFailure;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public abstract class AvailabilityContainer {
-    final ObservableList<AvailabilityWatcher> watchers = FXCollections.observableArrayList();
+    private final ObservableList<AvailabilityWatcher> watchers = FXCollections.observableArrayList();
 
     /**
      * A helper method that checks if there is at least one requestable of the given name available. This is used
@@ -19,6 +20,17 @@ public abstract class AvailabilityContainer {
      */
     public boolean isAvailable(String name) {
         return getWatcherByName(name).getCurrentAvailable() > 0;
+    }
+
+    /**
+     * A helper method that checks if there is at least one requestable of the name available for each name supplied.
+     * This is used primarily in branch logic dealing with Request objects.
+     *
+     * @param names the list of string names of the requestables to check
+     * @return true if all names given have at least one requestable that is available. false otherwise.
+     */
+    public boolean isAvailable(List<String> names) {
+        return names.stream().allMatch(name -> getWatcherByName(name).getCurrentAvailable() > 0);
     }
 
     /**
@@ -81,8 +93,11 @@ public abstract class AvailabilityContainer {
      * @param name
      *         the name to select
      * @return a station watcher object that has a matching station name.
+     *
+     * @throws NoSuchElementException
+     *         if the watcher doesn't exist
      */
-    public AvailabilityWatcher getWatcherByName(String name) {
+    public AvailabilityWatcher getWatcherByName(String name) throws NoSuchElementException {
         return watchers.stream()
                        .filter(watcher -> watcher.getName().equals(name))
                        .findFirst()

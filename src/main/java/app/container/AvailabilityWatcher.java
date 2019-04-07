@@ -38,8 +38,19 @@ public class AvailabilityWatcher {
         this.availableChangeListener = this::handleAvailableChangeEvent_UpdateFormattedAmount;
     }
 
+    /**
+     * Initializer method for creating a new station watcher. This method helps ensures that the availability watcher is
+     * constructed safely and accurately.
+     *
+     * @param name
+     *         the name of the station.
+     * @return a station watcher object.
+     */
+    static AvailabilityWatcher initWatcher(String name) {
+        return new AvailabilityWatcher(name);
+    }
 
-    // todo: have Station and Equipment to implement the 'availabilityItem' behavior interface
+
     /* ******************************************* External API *************************************************** */
 
     /**
@@ -163,18 +174,6 @@ public class AvailabilityWatcher {
         requestables.forEach(watcher::addItem);
         watcher.setFormattedAmount(watcher.createFormattedAmount());
         return watcher;
-    }
-
-    /**
-     * Initializer method for creating a new station watcher. This method helps ensures that the availability watcher is
-     * constructed safely and accurately.
-     *
-     * @param name
-     *         the name of the station.
-     * @return a station watcher object.
-     */
-    static AvailabilityWatcher initWatcher(String name) {
-        return new AvailabilityWatcher(name);
     }
 
     @Override
