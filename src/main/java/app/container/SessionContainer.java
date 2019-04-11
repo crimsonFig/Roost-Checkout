@@ -2,43 +2,63 @@ package app.container;
 
 import app.model.Request;
 import app.model.Session;
-import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WeakChangeListener;
-import javafx.collections.*;
-
+import app.util.exception.RequestFailure;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+/**
+ * This container class is designed to act as an API for creating and managing Session objects in order to maintain a
+ * centralized point of access and enforce access controls so that the state of the system remains valid.
+ * <p>
+ * Developers should use this class in order to interact with session objects instead of handling or creating session
+ * objects themselves.
+ */
 public class SessionContainer {
     private static SessionContainer instance = null;
 
-    private final ObservableList<Session>     sessions = FXCollections.observableArrayList();
-    private final ListChangeListener<Session> listAddChangeListener;
-    private final ChangeListener<Boolean>     sessionActiveChangeListener;
+    private final ObservableList<Session> sessions = FXCollections.observableArrayList();
 
-    private SessionContainer() {
-        listAddChangeListener = new WeakListChangeListener<>(this::handleListAddChangeEvent_AddSessionListener);
-        sessionActiveChangeListener = new WeakChangeListener<>(this::handleSessionActiveChangeEvent_SessionRemoval);
-    }
 
+    /**
+     * Constructs the session container and creates the listener objects to be used within the class.
+     */
+    private SessionContainer() {}
+
+    /**
+     * Initializer method for the class.
+     *
+     * @return a fully and properly initialized session container
+     */
     private static SessionContainer initSessionContainer() {
-        SessionContainer sessionContainer = new SessionContainer();
-        sessionContainer.addListChangeListener(sessionContainer.listAddChangeListener);
-        return sessionContainer;
+        return new SessionContainer();
     }
+
+
+    /* ****************************************** EXTERNAL API ***************************************************** */
 
     public static SessionContainer getInstance() {
         if (instance == null) {
-            instance = initSessionContainer();
+            synchronized (SessionContainer.class) {
+                if (instance == null) instance = initSessionContainer();
+            }
         }
         return instance;
     }
 
-    public ChangeListener<Boolean> getSessionActiveChangeListener() {
-        return sessionActiveChangeListener;
-    }
-
+    /**
+     * Gets an unmodifiable version of the list. This allows other classes to search and read the list, such as a view,
+     * but makes sure they do not change the list to ensure consistency and validity of the application state. Changing
+     * the list should be done through the container's API.
+     *
+     * @return an unmodifiable observable list that wraps the container's collection
+     */
     public ObservableList<Session> getSessions() {
         return FXCollections.unmodifiableObservableList(sessions);
     }
@@ -50,53 +70,127 @@ public class SessionContainer {
                        .orElseThrow(NoSuchElementException::new);
     }
 
+    /**
+     * Helper method for allowing other classes to add a ListChangeListener to this container's session list
+     *
+     * @param listener
+     *         the list change listener to apply
+     */
     void addListChangeListener(ListChangeListener<Session> listener) {
         sessions.addListener(listener);
     }
 
-    public void checkInSession(Session session) {
-        // set session to 'inactive'
-        // * this should trigger a listener event for
-        // * a session list removal event, which has session container remove the session from the sessions list
-        // * * an availability change event, which sets the session's station and equipment availability property to true
-        // * * * the availability change should trigger a notice creation event, which makes a notice if there is a waitlisted request for the newly available station/equipment
-        // * * a logging/reporting event, which has a gateway or reporting class log statistical info to the database
+    /**
+     * API method for starting a new session. This creates a new session object, makes the associated station and
+     * equipment unavailable, and adds the session to the collection of sessions. Doing so should have the effect of
+     * making the session visible in the sessions table view and causing a list change event for any listeners watching
+     * the sessions list.
+     * <p>
+     * This should typically be used only by the RequestContainer to convert a request into a session, which is the
+     * reason this particular method's visibility is package-private instead of public.
+     *
+     * @param request
+     *         the request to base the session information on.
+     * @throws RequestFailure
+     *         if the station or equipment cannot be made unavailable at the time of the request.
+     */
+    void startSession(Request request) throws RequestFailure {
+        boolean refreshable = !WaitlistContainer.getInstance().hasWaitListedRequest(request.getStationName());
+        Session newSession  = Session.initSession(request, refreshable);
 
-        // request the model to remove all listeners hooked to it. (i.e. call it's 'unloadResources' method)
-    }
-
-    public void refreshSessionTimer(Session session) {
-        // ...
-    }
-
-    void startSession(Request request) {
-        // create session object with the request
-        // * the session object should call it's init factory method
-        // * * init factory method lets constructor finish in case of constructor failure and then
-        // * * get station and equipable objects from request and ask the respective containers to make them unavailable
-
-        // apply listener to session's active property that calls the handleActiveSessionChangeEvent method
-        // * this method would call the removeSession method
-
-        // add session to sessions list
-        // * this should have other containers that is watching the sessions list to apply their listeners to the newly added session
-        // * * listeners would be the ones mentioned in checkInSession
-        // * * additionally, notice container should apply a listener for the session's timer property on reaching zero, create a notice about the person needing to be checked in or refreshed (if no one is waiting for them)
-    }
-
-    private <S extends Session> void handleListAddChangeEvent_AddSessionListener(ListChangeListener.Change<S> change) {
-        change.getAddedSubList().forEach(session -> session.activeProperty().addListener(sessionActiveChangeListener));
-    }
-
-    private <B extends Boolean> void handleSessionActiveChangeEvent_SessionRemoval(ObservableValue<B> observable,
-                                                                                   Boolean wasActive,
-                                                                                   Boolean isActive) {
-        // cast expected supertype ObservableValue<Boolean> to subtype BooleanProperty. ((this is fragile to type changes, but oh well))
-        // todo: since this is rather fragile, consider having it simply remove all sessions who's active property is false.
-        ReadOnlyProperty<B> activeProperty = (ReadOnlyProperty<B>) observable;
-        Session             session        = (Session) activeProperty.getBean();
-        if (!isActive) {
-            sessions.remove(session);
+        try {
+            // todo - make sure the request methods can roll back changes if an issue was caught.
+            StationContainer.getInstance().requestSetAvail(newSession.getStationName(), false);
+            EquipmentContainer.getInstance().requestSetAvail(newSession.getEquipmentNames(), false);
+        } catch (RuntimeException e) {
+            throw new RequestFailure("Station or Equipment couldn't be made unavailable. " + e.getMessage(), e);
         }
+
+        sessions.add(newSession);        
+    }
+
+    /**
+     * API method for checking in a session so that it is removed from the sessions table and the associated station and
+     * equipments are made available again.
+     *
+     * @param session
+     *         the session that is to be checked in
+     */
+    public void checkInSession(Session session) {
+        try {
+            // todo - make sure the request methods can roll back changes if an issue was caught.
+            StationContainer.getInstance().requestSetAvail(session.getStationName(), true);
+            EquipmentContainer.getInstance().requestSetAvail(session.getEquipmentNames(), true);
+            
+        } catch (RuntimeException e) {
+            throw new RequestFailure("Station or Equipment couldn't be made unavailable. " + e.getMessage(), e);
+        }
+
+        sessions.remove(session);
+       
+        // todo - possible logging of report data
+    }
+
+    /**
+     * Helper method for refreshing the time allotted to a session.
+     * <p>
+     * This method was created for the `refresh` button of the session table view of the HomeController.
+     *
+     * @param session
+     *         the session to refresh the timer of
+     */
+    public void refreshSessionTimer(Session session) {
+        if (WaitlistContainer.getInstance().hasWaitListedRequest(session.getStationName())) {
+            Alert requestNotReadyAlert = new Alert(Alert.AlertType.ERROR);
+            requestNotReadyAlert.setTitle("Session Refresh Restriction Alert");
+            requestNotReadyAlert.setHeaderText("Cannot extend this session's timer!");
+            requestNotReadyAlert.setContentText("Someone is waiting on this session's station.");
+            requestNotReadyAlert.showAndWait();
+            return;
+        }
+        session.refreshTimer();
+        sessions.sort(Comparator.comparingInt(Session::getTimer));
+        // todo - possible logging of report data
+    }
+
+    /**
+     * Helper method for updating the refreshable property.
+     * <p>
+     * This method was created for the HomeController listener
+     */
+    public void requestRefreshableUpdate() {
+        java.util.Set<String> stations = new java.util.HashSet<>();
+
+        // obtain a set of the names of all the stations being waited on
+        WaitlistContainer.getInstance()
+                         .getWaitListedRequests()
+                         .forEach(request -> stations.add(request.getStationName()));
+        // set session's refreshable to if a session's station is not being waited on
+        getSessions().forEach(s -> s.refreshableProperty().setValue(!stations.contains(s.getStationName())));
+    }
+
+    /* ****************************************** INTERNAL METHODS ************************************************* */
+
+    /**
+     * Helper method that supplies a timer based on the n'th session of a given station or equipment. This method was
+     * created to help calculate waitlist times.
+     *
+     * @param nameOfRequestable
+     *         the requestable to filter the sessions by
+     * @param indexOfSession
+     *         the position within the interval of sessions, from the shortest timer to the longest timer.
+     * @return the timer of a session that would be the n'th soonest position out of the given station or equipment.
+     */
+    int getSessionTimer(String nameOfRequestable, int indexOfSession) {
+        List<Session> sublist = sessions.stream()
+                                        .filter(s -> s.getStationName().equals(nameOfRequestable) ||
+                                                     s.getEquipmentNames().contains(nameOfRequestable))
+                                        .sorted(Comparator.comparingInt(Session::getTimer))
+                                        .collect(Collectors.toList());
+        int timer = sublist.get((indexOfSession < sublist.size()) ? indexOfSession : sublist.size() - 1).getTimer();
+        if (indexOfSession >= sublist.size()) {
+            timer += (indexOfSession + 1 - sublist.size())*Session.DEFAULT_START_MINUTES.get(ChronoUnit.SECONDS);
+        }
+        return timer;
     }
 }

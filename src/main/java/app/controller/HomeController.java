@@ -1,17 +1,13 @@
 package app.controller;
 
-import java.net.URL;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ResourceBundle;
-
 import app.container.RequestContainer;
-import app.model.Equipment;
-import app.model.Request;
+import app.container.SessionContainer;
+import app.container.WaitlistContainer;
 import app.model.Session;
-import javafx.collections.FXCollections;
+import app.model.Waitlist;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -19,109 +15,124 @@ import javafx.scene.layout.Priority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HomeController implements Initializable {
+public class HomeController {
     private static final Logger LOGGER = LogManager.getLogger(HomeController.class);
 
-    @FXML private TableView<Request>           tvWaitlist;
-    @FXML private TableView<Session>           tvSession;
-    @FXML private TableColumn<Session, String> tcSessionBanner, tcSessionName, tcSessionStation, tcSessionEquip, tcSessionTimer, tcSessionButtons;
-    @FXML private TableColumn<Request, String> tcWaitlistName, tcWaitlistTimer, tcWaitlistStation, tcWaitlistEquip, tcWaitlistButtons;
+    private final ListChangeListener<Waitlist> waitlistChangeListener = this::handleListChangeEvent_UpdateRefreshable;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    @FXML private TableView<Waitlist>          tvWaitlist;
+    @FXML private TableView<Session>           tvSession;
+    @FXML private TableColumn<Session, String> tcSessionBanner, tcSessionName, tcSessionStation, tcSessionEquip, tcSessionTimer;
+    @FXML private TableColumn<Session, Boolean> tcSessionButtons;
+    @FXML private TableColumn<Waitlist, String> tcWaitlistName, tcWaitlistTimer, tcWaitlistStation, tcWaitlistEquip;
+    @FXML private TableColumn<Waitlist, Boolean> tcWaitlistButtons;
+
+    @FXML
+    private void initialize() {
+        // add listener for session's refreshability to the waitlist container
+        WaitlistContainer.getInstance().addListChangeListener(waitlistChangeListener);
+
+        // bind session properties to the columns for automatic updating
         tcWaitlistName.setCellValueFactory(e -> e.getValue().nameProperty());
         tcWaitlistTimer.setCellValueFactory(e -> e.getValue().timerStringProperty());
         tcWaitlistStation.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcWaitlistEquip.setCellValueFactory(e -> e.getValue().equipmentStringProperty());
-        tcWaitlistButtons.setCellValueFactory(new PropertyValueFactory<>("DUMMY VALUE"));
-        tcWaitlistButtons.setCellFactory(param -> new TableCell<Request, String>() {
+        tcWaitlistButtons.setCellValueFactory(e -> e.getValue().acceptableProperty());
+        // define a custom button cell for the column
+        tcWaitlistButtons.setCellFactory(param -> new TableCell<Waitlist, Boolean>() {
             final Button acceptBtn = new Button("accept");
             final Button leaveBtn = new Button("leave");
+            final HBox buttons = new HBox(acceptBtn, leaveBtn);
+
+            {// this is an initializer block; initializes our button fields we've made.
+                acceptBtn.setMaxWidth(Double.MAX_VALUE);
+                leaveBtn.setMaxWidth(Double.MAX_VALUE);
+                HBox.setHgrow(acceptBtn, Priority.ALWAYS);
+                HBox.setHgrow(leaveBtn, Priority.ALWAYS);
+                buttons.setMaxWidth(Double.MAX_VALUE);
+                acceptBtn.setOnAction(e -> {
+                    /* todo: transaction for moving from waitlist to session */
+                    RequestContainer.getInstance().checkOutWaitlist(param.getTableView().getItems().get(getIndex()));
+                });
+                leaveBtn.setOnAction(e -> WaitlistContainer.getInstance()
+                                                           .removeFromWaitlist(param.getTableView()
+                                                                                    .getItems()
+                                                                                    .get(getIndex())));
+            }
 
             @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
+            protected void updateItem(Boolean isAcceptable, boolean empty) {
+                super.updateItem(isAcceptable, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    acceptBtn.setMaxWidth(Double.MAX_VALUE);
-                    leaveBtn.setMaxWidth(Double.MAX_VALUE);
-                    HBox buttons = new HBox(acceptBtn, leaveBtn);
-                    HBox.setHgrow(acceptBtn, Priority.ALWAYS);
-                    HBox.setHgrow(leaveBtn, Priority.ALWAYS);
-                    buttons.setMaxWidth(Double.MAX_VALUE);
+                    acceptBtn.setDisable(!isAcceptable);
                     setGraphic(buttons);
-                    acceptBtn.setOnAction(e -> {/* transaction for moving from waitlist to session */});
-                    leaveBtn.setOnAction(e -> RequestContainer.getInstance()
-                                                              .removeFromWaitlist(param.getTableView()
-                                                                                       .getItems()
-                                                                                       .get(getIndex())));
                 }
             }
         });
 
-
-        tcSessionBanner.setCellValueFactory(new PropertyValueFactory<>("banner"));
+        // bind session properties to the columns for automatic updating
+        tcSessionBanner.setCellValueFactory(new PropertyValueFactory<>("banner")); //todo: change this to be a string instead of an integer
         tcSessionName.setCellValueFactory(e -> e.getValue().nameProperty());
         tcSessionStation.setCellValueFactory(e -> e.getValue().stationNameProperty());
         tcSessionEquip.setCellValueFactory(e -> e.getValue().equipmentStringProperty());
         tcSessionTimer.setCellValueFactory(e -> e.getValue().timerStringProperty());
-        tcSessionButtons.setCellValueFactory(new PropertyValueFactory<>("DUMMY VALUE"));
-        tcSessionButtons.setCellFactory(param -> new TableCell<Session, String>() {
+        tcSessionButtons.setCellValueFactory(e -> e.getValue().refreshableProperty());
+        // define a custom button cell for the column
+        tcSessionButtons.setCellFactory(param -> new TableCell<Session, Boolean>() {
             final Button refreshBtn = new Button("refresh");
 
+            {// this is an initializer block; initializes the button field we've made.
+                refreshBtn.setMaxWidth(Double.MAX_VALUE);
+                refreshBtn.setOnAction(e -> SessionContainer.getInstance()
+                                                            .refreshSessionTimer(param.getTableView()
+                                                                                      .getItems()
+                                                                                      .get(getIndex())));
+            }
+
             @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
+            protected void updateItem(Boolean isRefreshable, boolean empty) {
+                super.updateItem(isRefreshable, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    refreshBtn.setMaxWidth(Double.MAX_VALUE);
-                    boolean waitlistExists = RequestContainer.getInstance()
-                                                             .hasWaitListedRequest(param.getTableView()
-                                                                                        .getItems()
-                                                                                        .get(getIndex())
-                                                                                        .getStationName());
-                    refreshBtn.setText((waitlistExists) ? "---" : "refresh");
+                    refreshBtn.setText((isRefreshable) ? "refresh" : "---");
+                    refreshBtn.setDisable(!isRefreshable);
                     setGraphic(refreshBtn);
-                    refreshBtn.setOnAction((waitlistExists)
-                                           ? (e -> {/* do nothing */})
-                                           : (e -> param.getTableView().getItems().get(getIndex()).refreshTimer()));
                 }
             }
         });
 
+        // attempt to bind the containers' observable list to our table, for automatic updating when list is changed anywhere
         try {
-            loadMock();
-
+            tvSession.setItems(SessionContainer.getInstance().getSessions());
+            tvWaitlist.setItems(WaitlistContainer.getInstance().getWaitListedRequests());
         } catch (Exception e) {
             LOGGER.catching(e);
         }
     }
 
-    private void loadMock() {
-        tvSession.setItems(FXCollections.observableArrayList(Session.initSession(2138743,
-                                                                                 "triston",
-                                                                                 "Pool",
-                                                                                 FXCollections.observableArrayList(
-                                                                                         Equipment.equipmentFactory(
-                                                                                                 "Sticks"))),
-                                                             Session.initSession(4235163,
-                                                                                 "Hugo",
-                                                                                 "TV",
-                                                                                 FXCollections.observableArrayList(
-                                                                                         Equipment.equipmentFactory(
-                                                                                                 "Game")))));
-
-        tvWaitlist.setItems(FXCollections.observableArrayList(Request.initRequest(2138743,
-                                                                                  "triston",
-                                                                                  "Pool",
-                                                                                  FXCollections.observableArrayList(
-                                                                                          Equipment.equipmentFactory(
-                                                                                                  "Sticks")),
-                                                                                  LocalTime.now()
-                                                                                           .plus(5, ChronoUnit.MINUTES)
-                                                                                           .toSecondOfDay())));
+    /**
+     * Handler method that implements the {@link ListChangeListener}'s functional interface. Used as and treated as a
+     * valid ListChangeListener.
+     * <p>
+     * This Listener is notified if the observable list changed. The added or removed requests will update the
+     * refreshability of sessions that have a matching station.
+     * <p>
+     * Developers should not call this method, but rather supply this class's field ({@link #waitlistChangeListener})
+     * that contains this method's reference to a desired {@link ObservableList#addListener(ListChangeListener)}.
+     *
+     * @param change
+     *         the Change object that describes all the changes to the list since the last call.
+     * @param <R>
+     *         Type extends Waitlist
+     */
+    private <R extends Waitlist> void handleListChangeEvent_UpdateRefreshable(ListChangeListener.Change<R> change) {
+        while (change.next()) {
+            if (change.wasAdded() || change.wasRemoved()) {
+                SessionContainer.getInstance().requestRefreshableUpdate();
+            }
+        }
     }
-
 }

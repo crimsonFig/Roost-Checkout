@@ -1,5 +1,6 @@
 package app;
 
+import app.container.*;
 import app.controller.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+        // instantiate the containers in the proper order.
+        StationContainer.getInstance();
+        EquipmentContainer.getInstance();
+        SessionContainer.getInstance();
+        RequestContainer.getInstance();
+        WaitlistContainer.getInstance();
+
 	    try {
             //menu view, base
             BorderPane root = FXMLLoader.load(ViewStrategy.BASE_VIEWS.BASE.getViewURL());

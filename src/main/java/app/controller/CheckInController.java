@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.container.SessionContainer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,6 +41,12 @@ public class CheckInController extends TrayViewLifecycleStrategy {
     @FXML
     private void handleSubmitAction(ActionEvent actionEvent) {
         // call session handler to check in session
+        try {
+            SessionContainer.getInstance().checkInSession(SessionContainer.getInstance().getSession(Integer.parseInt(tfBannerID.getText())));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
         ViewDirector.getViewDirector().handleCloseActiveView(this);
     }
 }

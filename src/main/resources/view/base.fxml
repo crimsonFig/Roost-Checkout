@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="base" prefHeight="750.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.BaseController">
+<BorderPane fx:id="base" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.BaseController">
     <top>
         <VBox alignment="TOP_CENTER" style="&#10;">
             <children>
@@ -22,12 +22,12 @@
                             <items>
                         <MenuItem mnemonicParsing="false" text="---" />
                                 <SeparatorMenuItem mnemonicParsing="false" />
-                                <MenuItem mnemonicParsing="false" text="Quit" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleQuitAction" text="Quit" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Alerts">
                             <items>
-                        <MenuItem mnemonicParsing="false" text="---" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleCreateNoticeAction" text="Create" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Inventory">
@@ -73,7 +73,7 @@
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button id="menuButton" fx:id="bellButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleBellAction" text="((bell))" HBox.hgrow="NEVER">
+                                <Button id="menuButton" fx:id="bellButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleBellAction" HBox.hgrow="NEVER">
                                     <HBox.margin>
                                         <Insets fx:id="x1" />
                                     </HBox.margin>
