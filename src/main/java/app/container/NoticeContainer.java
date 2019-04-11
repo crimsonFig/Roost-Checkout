@@ -77,7 +77,7 @@ public class NoticeContainer {
     			return;
     	
     	notices.add(Notice.noticeFactory(noticeString));
-    	BaseController.getInstance().newNotice(); 
+    	//BaseController.getInstance().newNotice(); 
 
     }
     

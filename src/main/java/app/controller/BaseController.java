@@ -67,25 +67,10 @@ public class BaseController {
     }
     
     public void newNotice() {
-    	System.out.println(bellButton);
-    	System.out.println(BELL_IMAGE_ACTIVE);
-
     	bellButton.setGraphic(BELL_IMAGE_ACTIVE);
-    	System.out.println("ran");
     }
     
     public void seenNotice() {
-    	bellButton.setGraphic(BELL_IMAGE);
-    }
-    
-    public static BaseController getInstance() {
-        if (instance == null) {
-            synchronized (BaseController.class) {
-                if (instance == null) {
-                    instance = new BaseController();
-                }
-            }
-        }
-        return instance;
-    }
+    	bellButton.setGraphic(BELL_IMAGE);    	
+    }    
 }
