@@ -60,6 +60,8 @@ public abstract class ViewStrategy {
      * that the view can come back to a view that spawned it, then do not apply this interface.
      */
     interface PureViewEnum extends BaseViewEnum {}
+    
+    interface DialogViewEnum extends ViewRoutingBehavior{}
 
     /**
      * Defines configuration data about a tray view constant to be used in the strategy pattern.
@@ -139,4 +141,28 @@ public abstract class ViewStrategy {
         public String getPath() {
             return path;
         }}
+    
+    /**
+     * Constant for the dialog views. Describes the file path, and stage name.
+     */
+    public enum DIALOG_VIEWS implements DialogViewEnum {
+        CREATE_NOTICE("/view/createAlert.fxml", "Create Notification");
+
+        private String   path;
+        private String	 name;
+
+        DIALOG_VIEWS(String path, String name) {
+            this.path = path;
+            this.name = name;
+        }
+
+        public String getPath() {
+            return path;
+        }
+        
+        public String getName() {
+        	return name;
+        }
+
+    }
 }

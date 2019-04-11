@@ -53,7 +53,7 @@ public class NoticeController extends TrayViewLifecycleStrategy {
             });
             return observable;
         }));
-        noticeListView.setItems(notices);
+        noticeListView.setItems(notices);     
     }
 
     @FXML

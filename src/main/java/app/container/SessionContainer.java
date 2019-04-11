@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
@@ -107,7 +106,7 @@ public class SessionContainer {
             throw new RequestFailure("Station or Equipment couldn't be made unavailable. " + e.getMessage(), e);
         }
 
-        sessions.add(newSession);
+        sessions.add(newSession);        
     }
 
     /**
@@ -122,11 +121,13 @@ public class SessionContainer {
             // todo - make sure the request methods can roll back changes if an issue was caught.
             StationContainer.getInstance().requestSetAvail(session.getStationName(), true);
             EquipmentContainer.getInstance().requestSetAvail(session.getEquipmentNames(), true);
+            
         } catch (RuntimeException e) {
             throw new RequestFailure("Station or Equipment couldn't be made unavailable. " + e.getMessage(), e);
         }
 
         sessions.remove(session);
+       
         // todo - possible logging of report data
     }
 

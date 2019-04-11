@@ -18,8 +18,8 @@ import java.time.temporal.TemporalAmount;
  */
 public class Session extends Timer implements RequestWrapper {
     // constants
-    public static final TemporalAmount DEFAULT_START_MINUTES   = Duration.ofMinutes(5);
-    public static final TemporalAmount DEFAULT_REFRESH_MINUTES = Duration.ofMinutes(5);
+    public static final TemporalAmount DEFAULT_START_MINUTES   = Duration.ofMinutes(1);
+    public static final TemporalAmount DEFAULT_REFRESH_MINUTES = Duration.ofMinutes(1);
 
     // immutable properties
     private final ReadOnlyObjectProperty<Request> request;
@@ -149,4 +149,9 @@ public class Session extends Timer implements RequestWrapper {
     public ReadOnlyObjectProperty<Request> requestProperty() {
         return request;
     }
+
+	@Override
+	protected String getTimeUpNoticeString() {
+		return getName() + "'s time is up at " + getStationName();
+	}
 }

@@ -163,4 +163,9 @@ public class Waitlist extends Timer implements RequestWrapper {
     public void setAcceptable(boolean acceptable) {
         this.acceptable.set(acceptable);
     }
+    
+    @Override
+	protected String getTimeUpNoticeString() {
+		return getName() + " is up next at the " + getStationName();
+	}
 }

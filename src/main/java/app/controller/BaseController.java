@@ -1,6 +1,7 @@
 package app.controller;
 
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -9,18 +10,24 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import app.container.AvailabilityContainer;
+import app.container.NoticeContainer;
+import app.container.StationContainer;
+import app.model.Notice;
+
 public class BaseController {
     private static final Logger LOGGER = LogManager.getLogger(BaseController.class);
 
     @FXML private BorderPane base;
-    @FXML private Button     checkInButton, checkOutButton, bellButton, availabilityButton;
-
+    @FXML private Button     checkInButton, checkOutButton, availabilityButton, bellButton;
+    private final ImageView BELL_IMAGE = new ImageView(new Image("/images/bell.gif"));
+    private final ImageView BELL_IMAGE_ACTIVE = new ImageView(new Image("/images/bell_active.gif"));
+    private static       BaseController instance;
+    
     @FXML
     private void initialize() {
-        ViewDirector.initInstance(getBase());    // inject the view director with the base node
-        ImageView bellImage = new ImageView(new Image("/images/bell.gif")); //for the bell button image      
-        bellButton.setGraphic(bellImage);
-
+        ViewDirector.initInstance(getBase());    // inject the view director with the base node     
+        bellButton.setGraphic(BELL_IMAGE);
     }
 
     @FXML
@@ -42,6 +49,12 @@ public class BaseController {
     @FXML
     private void handleBellAction() {
         ViewDirector.getViewDirector().handleDisplayingPureView(ViewStrategy.PURE_TRAY_VIEWS.NOTICE_TRAY, bellButton);
+		bellButton.setGraphic(BELL_IMAGE);//refreshes button image
+    }
+    
+    @FXML
+    private void handleCreateNoticeAction() {
+    	ViewDirector.getViewDirector().createPopOut(ViewStrategy.DIALOG_VIEWS.CREATE_NOTICE);
     }
     
     @FXML
@@ -52,5 +65,27 @@ public class BaseController {
     public BorderPane getBase() {
         return base;
     }
+    
+    public void newNotice() {
+    	System.out.println(bellButton);
+    	System.out.println(BELL_IMAGE_ACTIVE);
 
+    	bellButton.setGraphic(BELL_IMAGE_ACTIVE);
+    	System.out.println("ran");
+    }
+    
+    public void seenNotice() {
+    	bellButton.setGraphic(BELL_IMAGE);
+    }
+    
+    public static BaseController getInstance() {
+        if (instance == null) {
+            synchronized (BaseController.class) {
+                if (instance == null) {
+                    instance = new BaseController();
+                }
+            }
+        }
+        return instance;
+    }
 }

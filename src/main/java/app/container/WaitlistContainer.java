@@ -110,6 +110,17 @@ public class WaitlistContainer {
     void addToWaitlist(Request request) {
         waitListedRequests.add(Waitlist.initWaitlist(request));
     }
+    
+    /**
+     * Helper method that gets the next request in the waitlist
+     *
+     * @param stationName
+     *         the name of the station to test
+     * @return the next waitlist if their is one
+     */
+    public Optional<Waitlist> getNextWaitListedRequest(String stationName) {
+    	return waitListedRequests.stream().filter(e -> e.getStationName().equals(stationName)).findFirst();
+    };
 
     /* ************************************ INTERNAL METHODS ******************************************************* */
 

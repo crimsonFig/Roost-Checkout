@@ -9,6 +9,10 @@ import javafx.event.ActionEvent;
 import java.time.Duration;
 import java.time.LocalTime;
 
+import app.container.NoticeContainer;
+import app.container.SessionContainer;
+import app.container.WaitlistContainer;
+
 abstract class Timer {
     public static final  String   TIMER_IS_ZERO_MSG   = "done";
     private static final String   TIMER_FORMAT        = "%s";
@@ -28,15 +32,25 @@ abstract class Timer {
     protected String createTimerString() {
         LocalTime sessionEndTime = LocalTime.ofSecondOfDay(timerProperty().longValue());
         LocalTime currentTime    = LocalTime.now();
-        return currentTime.isAfter(sessionEndTime)
-               ? TIMER_IS_ZERO_MSG
-               : String.format(TIMER_FORMAT, Duration.between(currentTime, sessionEndTime).toString());
+        if(currentTime.isAfter(sessionEndTime)) {
+        	if(this instanceof Session && SessionContainer.getInstance().getSessions().contains((Session)this))      		
+        		NoticeContainer.getInstance().createNotice(getTimeUpNoticeString());
+        	else if(this instanceof Waitlist && WaitlistContainer.getInstance().getWaitListedRequests().contains((Waitlist)this))
+        		NoticeContainer.getInstance().createNotice(getTimeUpNoticeString());
+
+        	return TIMER_IS_ZERO_MSG;       	 
+        }else
+        	return String.format(TIMER_FORMAT, Duration.between(currentTime, sessionEndTime).toString());
         // todo: once done testing, change to `toMinutes()` and correct Timer_Format
     }
 
-    protected Timeline getClock() {
+    
+
+	protected Timeline getClock() {
         return clock;
     }
+	
+	protected abstract String getTimeUpNoticeString();
 
     public abstract IntegerProperty timerProperty();
 

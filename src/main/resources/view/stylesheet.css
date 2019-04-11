@@ -131,9 +131,16 @@
     -fx-prompt-text-fill: #f0ebda;
 }
 
-.text-field > .text {
-	
+.text-area .content{
+    -fx-background-color: #f8ab53, #edc987, #edc987;
+    -fx-prompt-text-fill: #f0ebda;
 }
+
+.text-area:focused .content{
+    -fx-background-color: #edc987, #f2d7a0, #f2d7a0;
+    -fx-prompt-text-fill: #fffcf5;
+}
+
 
 .text-field:focused {
     -fx-background-color: #edc987, white, #f2d7a0;
