@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <items>
+        <stations>
+            <station name="TV" total="4">
+                <equipables>
+                    <equipable name="Smash Bro"/>
+                    <equipable name="Mario Party"/>
+                </equipables>
+            </station>
+            <station name="Tennis Table" total="2">
+                <equipables>
+                    <equipable name="Paddle"/>
+                </equipables>
+            </station>
+            <station name="Pool Table" total="3">
+                <equipables>
+                    <equipable name="Pool Stick"/>
+                </equipables>
+            </station>
+        </stations>
+
+        <equipments>
+            <equipment name="Smash Bro" total="2"/>
+            <equipment name="Mario Party" total="1"/>
+            <equipment name="Paddle" total="4"/>
+            <equipment name="Pool Stick" total="6"/>
+        </equipments>
+    </items>
+</configuration>
