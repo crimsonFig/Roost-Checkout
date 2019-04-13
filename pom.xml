@@ -16,6 +16,20 @@
                 <role>developer</role>
             </roles>
         </developer>
+        <developer>
+            <name>Maurice Velgis</name>
+            <id>mauricevelgis</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Nick Fritz</name>
+            <id>nfritz3</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <properties>
@@ -59,7 +73,7 @@
     </dependencies>
 
     <build>
-        <finalName>interactive_sylladex</finalName>
+        <finalName>Roost Checkout</finalName>
         <pluginManagement> <!-- specify plugin versions -->
             <plugins>
                 <plugin>
