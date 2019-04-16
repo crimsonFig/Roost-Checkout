@@ -1,7 +1,5 @@
 package app.controller;
 
-import app.Main;
-import app.controller.ViewStrategy.DIALOG_VIEWS;
 import app.util.exception.ViewException;
 import app.util.exception.ViewUnclosableException;
 import javafx.collections.FXCollections;
@@ -11,12 +9,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -27,10 +22,10 @@ import java.nio.file.NoSuchFileException;
 import java.util.*;
 
 public class ViewDirector {
-    private static final Logger       logger = LogManager.getLogger(ViewDirector.class);
+    private static final Logger       LOGGER = LogManager.getLogger(ViewDirector.class);
     private static       ViewDirector viewDirector;
     private              BorderPane   base;
-    private				 Stage 		  openDialog;
+    private              Stage        openDialog;
 
     private ObservableList<ViewLifecycleStrategy>                                         activeViewStrategies = FXCollections
                                                                                                                          .observableArrayList();
@@ -156,26 +151,26 @@ public class ViewDirector {
 
         try {
             java.net.URL contentURL = viewMetadata.getViewURL();
-            logger.info("loading view url as content node. URL = " + contentURL);
+            LOGGER.info("loading view url as content node. URL = " + contentURL);
             FXMLLoader loader  = new FXMLLoader(contentURL);
             Parent     content = loader.load();
             if (content == null) throw new ViewException();
             return loader.getController();
 
         } catch (NoSuchFileException e) {
-            logger.error("Failed to find the content view.", e);
+            LOGGER.error("Failed to find the content view.", e);
             contentFailureAlert = new Alert(Alert.AlertType.ERROR, "Unable to display window at this time.");
             contentFailureAlert.setHeaderText("Error finding the content to display.");
             return null;
 
         } catch (IOException e) {
-            logger.error("Failed to load the content view.", e);
+            LOGGER.error("Failed to load the content view.", e);
             contentFailureAlert = new Alert(Alert.AlertType.ERROR, "Unable to display window at this time.");
             contentFailureAlert.setHeaderText("Error loading the content to display.");
             return null;
 
         } catch (ViewException e) {
-            logger.error("Failed to initialize the content view.", e);
+            LOGGER.error("Failed to initialize the content view.", e);
             contentFailureAlert = new Alert(Alert.AlertType.ERROR, "Unable to display window at this time.");
             contentFailureAlert.setHeaderText("Error creating content to display.");
             return null;
@@ -213,61 +208,25 @@ public class ViewDirector {
             //ignored
         }
     }
-    
+
     /**
-     * creates a popout with the passed dialog view
+     * creates a popout with the passed dialog view. This popout will not be closed by opening another a view.
      *
-     * @param dialog view
-     *         the view you want to be a pop out dialog
+     * @param viewMetadata
+     *         view the view you want to be a pop out dialog
      */
-    public void createPopOut(DIALOG_VIEWS viewMetadata) {  	  	   
-        Objects.requireNonNull(viewMetadata);
-        Alert contentFailureAlert = null;
+    void handleDisplayingPopout(ViewStrategy.DialogViewEnum viewMetadata) {
+        ViewLifecycleStrategy controllerViewStrategy = createActiveView(viewMetadata);
+        if (controllerViewStrategy == null) {
+            // create failed, so return
+            return;
+        }
         try {
-            java.net.URL contentURL = viewMetadata.getViewURL();
-            logger.info("loading view url as content node. URL = " + contentURL);
-            FXMLLoader loader  = new FXMLLoader(contentURL);
-            Parent     content = loader.load();
-            Stage dialog = new Stage();
-            dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initOwner(Main.mainStage);
-            dialog.setTitle(viewMetadata.getName());
-            dialog.getIcons().add(new Image("/images/roostIcon.jpg"));
-            dialog.setScene(new Scene(content));
-            dialog.getScene().getStylesheets().add("/view/stylesheet.css");
-            dialog.show();
-            
-            openDialog = dialog;
-            
-            if (content == null) throw new ViewException();        
-        } catch (NoSuchFileException e) {
-            logger.error("Failed to find the content view.", e);
-            contentFailureAlert = new Alert(Alert.AlertType.ERROR, "Unable to display window at this time.");
-            contentFailureAlert.setHeaderText("Error finding the content to display.");
-        } catch (IOException e) {
-            logger.error("Failed to load the content view.", e);
-            contentFailureAlert = new Alert(Alert.AlertType.ERROR, "Unable to display window at this time.");
-            contentFailureAlert.setHeaderText("Error loading the content to display.");
+            // ask the view's controller to handle adding the view to the scene
+            controllerViewStrategy.openingBehavior();
         } catch (ViewException e) {
-            logger.error("Failed to initialize the content view.", e);
-            contentFailureAlert = new Alert(Alert.AlertType.ERROR, "Unable to display window at this time.");
-            contentFailureAlert.setHeaderText("Error creating content to display.");
-        } finally {
-            // if an exception occurred then show an alert to the user and leave the current view setup unchanged
-            if (contentFailureAlert != null) {
-                contentFailureAlert.showAndWait();
-            }
-        }   
-    }
-    
-    /**
-     * closes an the active dialog stage
-     */
-    public void closeDialog(){
-    	if(openDialog == null)
-    		return;
-    	else
-    		openDialog.close();
-    	
+            LOGGER.error("Error displaying a pop out view.", e);
+            //todo add better support for potential exceptions
+        }
     }
 }
