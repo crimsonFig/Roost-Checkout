@@ -6,14 +6,18 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class defines lifecycle behaviors and dependencies for tray-style views. All controllers that have a tray-style
  * view and are in the {@link ViewStrategy.TrayViewConfigStrategy} enum should extend this class.
- *
+ * <p>
  * Child classes can override methods of this class to alter the defaulted behavior.
  */
 public abstract class TrayViewLifecycleStrategy implements ViewLifecycleStrategy {
+    private static final Logger LOGGER = LogManager.getLogger(TrayViewLifecycleStrategy.class);
+    private static final double DEFAULT_EXPANDED_SIZE_VALUE = 250;
 
     @Override
     public void openingBehavior() {
@@ -106,7 +110,14 @@ public abstract class TrayViewLifecycleStrategy implements ViewLifecycleStrategy
      *         the content node of this view
      */
     protected void animateTrayOpen(Pane trayNode, Pane content) {
-        double expandSize = content.getPrefWidth();
+        double expandSize;
+        if (content.getPrefWidth() > 0) expandSize = content.getPrefWidth();
+        else if (content.getWidth() > 0) expandSize = content.getWidth();
+        else {
+            expandSize = DEFAULT_EXPANDED_SIZE_VALUE;
+            LOGGER.error("width of content node is not a positive value. Using a defaulted value instead.");
+        }
+
         Timeline expandTrayAnimation = new Timeline(new KeyFrame(Duration.millis(500),
                                                                  new KeyValue(content.opacityProperty(),
                                                                               1,
@@ -144,7 +155,7 @@ public abstract class TrayViewLifecycleStrategy implements ViewLifecycleStrategy
 
     abstract protected BorderPane getBase();
 
-    abstract protected Pane getContent();   // todo: create a test that make's sure that content pane must not have a prefWidthProperty = -1 (i.e. set to computed size).
+    abstract protected Pane getContent();
 
     abstract protected void unloadControllerResources();
 }
