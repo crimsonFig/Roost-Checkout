@@ -25,7 +25,6 @@ public class ViewDirector {
     private static final Logger       LOGGER = LogManager.getLogger(ViewDirector.class);
     private static       ViewDirector viewDirector;
     private              BorderPane   base;
-    private              Stage        openDialog;
 
     private ObservableList<ViewLifecycleStrategy>                                         activeViewStrategies = FXCollections
                                                                                                                          .observableArrayList();
