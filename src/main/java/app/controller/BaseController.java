@@ -1,7 +1,6 @@
 package app.controller;
 
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -10,20 +9,15 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import app.container.AvailabilityContainer;
-import app.container.NoticeContainer;
-import app.container.StationContainer;
-import app.model.Notice;
-
 public class BaseController {
     private static final Logger LOGGER = LogManager.getLogger(BaseController.class);
 
     @FXML private BorderPane base;
     @FXML private Button     checkInButton, checkOutButton, availabilityButton, bellButton;
-    private final ImageView BELL_IMAGE = new ImageView(new Image("/images/bell.gif"));
-    private final ImageView BELL_IMAGE_ACTIVE = new ImageView(new Image("/images/bell_active.gif"));
-    private static       BaseController instance;
-    
+    private final  ImageView      BELL_IMAGE        = new ImageView(new Image(ViewStrategy.RESOURCES.BELL.getPath()));
+    private final  ImageView      BELL_IMAGE_ACTIVE = new ImageView(new Image(ViewStrategy.RESOURCES.BELL_ACTIVE.getPath()));
+    private static BaseController instance;
+
     @FXML
     private void initialize() {
         ViewDirector.initInstance(getBase());    // inject the view director with the base node     
@@ -49,28 +43,28 @@ public class BaseController {
     @FXML
     private void handleBellAction() {
         ViewDirector.getViewDirector().handleDisplayingPureView(ViewStrategy.PURE_TRAY_VIEWS.NOTICE_TRAY, bellButton);
-		bellButton.setGraphic(BELL_IMAGE);//refreshes button image
+        bellButton.setGraphic(BELL_IMAGE);//refreshes button image
     }
-    
+
     @FXML
     private void handleCreateNoticeAction() {
-    	ViewDirector.getViewDirector().createPopOut(ViewStrategy.DIALOG_VIEWS.CREATE_NOTICE);
+        ViewDirector.getViewDirector().handleDisplayingPopout(ViewStrategy.DIALOG_VIEWS.CREATE_NOTICE);
     }
-    
+
     @FXML
     private void handleQuitAction() {
-    	Platform.exit();
+        Platform.exit();
     }
 
     public BorderPane getBase() {
         return base;
     }
-    
+
     public void newNotice() {
-    	bellButton.setGraphic(BELL_IMAGE_ACTIVE);
+        bellButton.setGraphic(BELL_IMAGE_ACTIVE);
     }
-    
+
     public void seenNotice() {
-    	bellButton.setGraphic(BELL_IMAGE);    	
-    }    
+        bellButton.setGraphic(BELL_IMAGE);
+    }
 }

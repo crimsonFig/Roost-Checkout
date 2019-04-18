@@ -39,7 +39,7 @@ public class Main extends Application {
             stage.requestFocus();
             stage.getIcons().add(new Image("/images/roostIcon.jpg")); //todo replace with enum route
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(ViewStrategy.CSS_ROUTES.STYLES.getPath());
+            scene.getStylesheets().add(ViewStrategy.RESOURCES.STYLES.getPath());
             stage.setScene(scene);
             mainStage = stage;
         } catch (Exception e) {
