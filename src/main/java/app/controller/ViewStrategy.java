@@ -61,7 +61,7 @@ public abstract class ViewStrategy {
      */
     interface PureViewEnum extends BaseViewEnum {}
     
-    interface DialogViewEnum extends ViewRoutingBehavior{}
+    interface DialogViewEnum extends PureViewEnum {}
 
     /**
      * Defines configuration data about a tray view constant to be used in the strategy pattern.
@@ -87,11 +87,15 @@ public abstract class ViewStrategy {
     /**
      * Constants for the CSS files. Describes the URL and file path of the resource.
      */
-    public enum CSS_ROUTES implements ViewRoutingBehavior {STYLES("/view/stylesheet.css");
+    public enum RESOURCES implements ViewRoutingBehavior {
+        STYLES("/view/stylesheet.css"),
+        ROOST_ICON("/images/roostIcon.jpg"),
+        BELL("/images/bell.gif"),
+        BELL_ACTIVE("/images/bell_active.gif");
 
         private String path;
 
-        CSS_ROUTES(String viewPath) {
+        RESOURCES(String viewPath) {
             this.path = viewPath;
         }
 
@@ -146,23 +150,16 @@ public abstract class ViewStrategy {
      * Constant for the dialog views. Describes the file path, and stage name.
      */
     public enum DIALOG_VIEWS implements DialogViewEnum {
-        CREATE_NOTICE("/view/createAlert.fxml", "Create Notification");
+        CREATE_NOTICE("/view/createAlert.fxml");
 
         private String   path;
-        private String	 name;
 
-        DIALOG_VIEWS(String path, String name) {
+        DIALOG_VIEWS(String path) {
             this.path = path;
-            this.name = name;
         }
 
         public String getPath() {
             return path;
         }
-        
-        public String getName() {
-        	return name;
-        }
-
     }
 }
