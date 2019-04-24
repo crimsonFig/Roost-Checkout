@@ -2,29 +2,223 @@
 <configuration>
     <items>
         <stations>
-            <station name="TV" total="4">
+            <station name="TV-1" total="1">
+                <consoles>
+                    <console name="Xbox One" prepend="xbx"/>
+                </consoles>
                 <equipables>
-                    <equipable name="Smash Bro"/>
-                    <equipable name="Mario Party"/>
+                    <equipable name="HDMI Cords"/>
                 </equipables>
             </station>
-            <station name="Tennis Table" total="2">
+            <station name="TV-2" total="1">
+                <consoles>
+                    <console name="Xbox One" prepend="xbx"/>
+                    <console name="Wii" prepend="wii"/>
+                    <console name="PS4" prepend="ps4"/>
+                    <console name="PS3" prepend="ps3"/>
+                </consoles>
+                <equipables>
+                    <equipable name="HDMI Cords"/>
+                </equipables>
+            </station>
+            <station name="TV-3" total="1">
+                <consoles>
+                    <console name="Xbox One" prepend="xbx"/>
+                    <console name="Xbox 360" prepend="360"/>
+                    <console name="Wii U" prepend="wiu"/>
+                    <console name="Wii" prepend="wii"/>
+                </consoles>
+                <equipables>
+                    <equipable name="HDMI Cords"/>
+                </equipables>
+            </station>
+            <station name="TV-4" total="1">
+                <consoles>
+                    <console name="Xbox 360" prepend="360"/>
+                    <console name="Wii U" prepend="wiu"/>
+                    <console name="Wii" prepend="wii"/>
+                    <console name="PS3" prepend="ps3"/>
+                </consoles>
+                <equipables>
+                    <equipable name="HDMI Cords"/>
+                </equipables>
+            </station>
+
+            <station name="Pool Table" total="4">
+                <equipables>
+                    <equipable name="Stick"/>
+                </equipables>
+            </station>
+            <station name="FoosBall Table" total="1">
+                <equipables>
+                    <equipable name="FoosBall Ball"/>
+                </equipables>
+            </station>
+            <station name="PingPong Table" total="2">
                 <equipables>
                     <equipable name="Paddle"/>
                 </equipables>
             </station>
-            <station name="Pool Table" total="3">
+            <station name="AirHockey Table" total="1">
                 <equipables>
-                    <equipable name="Pool Stick"/>
+                    <equipable name="Puck"/>
                 </equipables>
             </station>
         </stations>
-
         <equipments>
-            <equipment name="Smash Bro" total="2"/>
-            <equipment name="Mario Party" total="1"/>
-            <equipment name="Paddle" total="4"/>
-            <equipment name="Pool Stick" total="6"/>
+            <equipment name="xbx_Batman Arkham Knight" total="1"/>
+            <equipment name="xbx_Star Wars Battlefront" total="1"/>
+            <equipment name="xbx_Battlefield 1" total="1"/>
+            <equipment name="xbx_Call of Duty Infinite Warfare Legacy Edition" total="1"/>
+            <equipment name="xbx_Call of Duty Advanced Warfare" total="1"/>
+            <equipment name="xbx_Call of Duty Ghosts" total="1"/>
+            <equipment name="xbx_Call of Duty Black Ops 3" total="1"/>
+            <equipment name="xbx_Destiny" total="1"/>
+            <equipment name="xbx_Dragonball Fighterz" total="1"/>
+            <equipment name="xbx_Dragonball Xenoverse" total="1"/>
+            <equipment name="xbx_Dragonball Xenoverse 2" total="1"/>
+            <equipment name="xbx_Dying Light" total="1"/>
+            <equipment name="xbx_FIFA 18" total="1"/>
+            <equipment name="xbx_FIFA 19" total="1"/>
+            <equipment name="xbx_Forza Motorsport 5" total="1"/>
+            <equipment name="xbx_Gears of War 4" total=""/>
+            <equipment name="xbx_Gears of War Ultimate Edition" total="1"/>
+            <equipment name="xbx_Halo The Master Chief Collection" total="1"/>
+            <equipment name="xbx_Halo 5 Guardians" total="1"/>
+            <equipment name="xbx_Injustice 2 Legendary Edition" total="1"/>
+            <equipment name="xbx_Killer Instinct" total="1"/>
+            <equipment name="xbx_Mortal Combat X" total="1"/>
+            <equipment name="xbx_Madden 18" total="1"/>
+            <equipment name="xbx_Madden 19" total="1"/>
+            <equipment name="xbx_the Phantom Pain" total="1"/>
+            <equipment name="xbx_NBA 2K18" total="1"/>
+            <equipment name="xbx_NBA 2K19" total="1"/>
+            <equipment name="xbx_Overwatch Origins Edition" total="1"/>
+            <equipment name="xbx_Rayman Legends" total="1"/>
+            <equipment name="xbx_Tekken 7" total="1"/>
+            <equipment name="xbx_UFC" total="1"/>
+            <equipment name="xbx_Watch Dogs" total="1"/>
+
+            <equipment name="wii_Just Dance 4" total="1"/>
+            <equipment name="wii_Just Dance 3" total="2"/>
+            <equipment name="wii_Just Dance 2" total="1"/>
+            <equipment name="wii_Just Dance 2015" total="1"/>
+            <equipment name="wii_Just Dance 2014" total="1"/>
+            <equipment name="wii_Just Dance 2016" total="1"/>
+            <equipment name="wii_Just Dance 2017" total="1"/>
+            <equipment name="wii_Just Dance Greatest Hits" total="1"/>
+            <equipment name="wii_Super Smash Bros. Brawl" total="2"/>
+            <equipment name="wii_Mario Party 9" total="1"/>
+            <equipment name="wii_Wii Sports" total="2"/>
+            <equipment name="wii_Wii Play" total="1"/>
+            <equipment name="wii_Rayman Raving Rabbids" total="1"/>
+            <equipment name="wii_Super Mario All Stars" total="2"/>
+            <equipment name="wii_Super Mario Galaxy" total="1"/>
+
+            <equipment name="wiu_Mario Party 10" total="1"/>
+            <equipment name="wiu_Mario Kart 8" total="2"/>
+            <equipment name="wiu_Pokken Tournement" total="2"/>
+            <equipment name="wiu_StarFox Guard" total="1"/>
+            <equipment name="wiu_StarFox Zero" total="1"/>
+            <equipment name="wiu_Super Smash Bros. for WiiU" total="1"/>
+
+            <equipment name="ps4_Batman Arkham Knight" total="1"/>
+            <equipment name="ps4_BattleFront" total="1"/>
+            <equipment name="ps4_BattleField 1" total="1"/>
+            <equipment name="ps4_BattleField 4" total="1"/>
+            <equipment name="ps4_Call of Duty Advanced Warfare" total="1"/>
+            <equipment name="ps4_Call of Duty Infinite Warfare" total="1"/>
+            <equipment name="ps4_Call of Duty Ghost" total="2"/>
+            <equipment name="ps4_Destiny" total="1"/>
+            <equipment name="ps4_Dragon Ball Fighterz" total="1"/>
+            <equipment name="ps4_Dragon Ball Xenoverse" total="2"/>
+            <equipment name="ps4_Injustice" total="1"/>
+            <equipment name="ps4_Injustice 2" total="1"/>
+            <equipment name="ps4_inFamous Second Son" total="1"/>
+            <equipment name="ps4_Madden 18" total="1"/>
+            <equipment name="ps4_Madden 19" total="1"/>
+            <equipment name="ps4_Fifa 18" total="1"/>
+            <equipment name="ps4_Fifa 19" total="1"/>
+            <equipment name="ps4_NBA 2K 18" total="1"/>
+            <equipment name="ps4_NBA 2K 19" total="1"/>
+            <equipment name="ps4_Mortal Kombat X" total="1"/>
+            <equipment name="ps4_Need for Speed" total="1"/>
+            <equipment name="ps4_Need for Speed Rivals" total="1"/>
+            <equipment name="ps4_Naruto Sheppuden Ultimate Ninja Storm" total="1"/>
+            <equipment name="ps4_Stree Fighter V" total="2"/>
+            <equipment name="ps4_Overwatch" total="1"/>
+            <equipment name="ps4_UFC" total="1"/>
+            <equipment name="ps4_UFC 3" total="1"/>
+            <equipment name="ps4_Watch Dogs" total="1"/>
+            <equipment name="ps4_Wolfenstein" total="1"/>
+            <equipment name="ps4_The Phantom Pain" total="1"/>
+            <equipment name="ps4_Tekken 7" total="1"/>
+
+            <equipment name="ps3_Bioshock" total="1"/>
+            <equipment name="ps3_Bioshock 2" total="1"/>
+            <equipment name="ps3_Call of Duty Black Ops" total="2"/>
+            <equipment name="ps3_Call of Duty Black Ops 2" total="1"/>
+            <equipment name="ps3_Call of Duty 4" total="1"/>
+            <equipment name="ps3_Call of Duty Modern Warfare 3" total="1"/>
+            <equipment name="ps3_Call of Duty Modern Warfare 2" total="1"/>
+            <equipment name="ps3_Motal Kombat" total="1"/>
+            <equipment name="ps3_God of War" total="1"/>
+            <equipment name="ps3_Injustice" total="1"/>
+            <equipment name="ps3_Little Big Planet" total="1"/>
+            <equipment name="ps3_Need for Speed Most Wanted" total="1"/>
+            <equipment name="ps3_Super Stree Fighter IV" total="1"/>
+            <equipment name="ps3_Stree Fighter X Tekken" total="1"/>
+            <equipment name="ps3_Tekken The Tournament" total="1"/>
+            <equipment name="ps3_Tekken 6" total="2"/>
+            <equipment name="ps3_Ultra Street Street Fighter IV" total="1"/>
+            <equipment name="ps3_Naruto Sheppuden Ultimate Ninja Storm Revolution" total="1"/>
+
+            <equipment name="360_Battlefield 3" total="1"/>
+            <equipment name="360_Bioshock Infinite" total="1"/>
+            <equipment name="360_Call of Duty Black Ops" total="1"/>
+            <equipment name="360_Dead Space 3" total="1"/>
+            <equipment name="360_Gears of War Judgment" total="1"/>
+            <equipment name="360_Gears of War" total="1"/>
+            <equipment name="360_Gears of War 2" total="1"/>
+            <equipment name="360_Gears of War 3" total="1"/>
+            <equipment name="360_Halo Reach" total="1"/>
+            <equipment name="360_Halo 3" total="1"/>
+            <equipment name="360_Halo 3 ODST" total="1"/>
+            <equipment name="360_Injustice" total="1"/>
+            <equipment name="360_Left 4 Dead 2" total="1"/>
+            <equipment name="360_Madden 25" total="1"/>
+            <equipment name="360_Marvel vs Capcom 3" total="1"/>
+            <equipment name="360_Mortal Kombat" total="1"/>
+            <equipment name="360_Need for Speed Pro Street" total="1"/>
+            <equipment name="360_Super Street Fighter IV" total="1"/>
+            <equipment name="360_Unreal Tournament" total="1"/>
+
+            <equipment name="ps3-e_PS3 Controller" total="3" />
+            <equipment name="ps4-e_PS4 Controller" total="5" />
+            <equipment name="xbx-e_XBox One Controller" total="6" />
+            <equipment name="360-e_XBox 360 Controller" total="5" />
+            <equipment name="wii-e_Wii Nunchuck Controller" total="2" />
+            <equipment name="wiu-e_Wii U Gamepad" total="5" />
+            <equipment name="wiu-e_Wii U Remote" total="7" />
+            <equipment name="wii-e_Wii Adapter" total="2" />
+            <equipment name="ps4-e_PS4 Syncing Cord" total="2" />
+            <equipment name="ps3-e_PS3 Syncing Cord" total="1" />
+
+            <equipment name="HDMI Cord" total="2" />
+
+            <equipment name="Paddle" total="13" />
+            <equipment name="Puck" total="12" />
+            <equipment name="Foosball ball" total="25" />
+            <equipment name="Stick" total="8" />
         </equipments>
+
+        <consoles>
+            <console name="Xbox One" prepend="xbx"/>
+            <console name="Xbox 360" prepend="360"/>
+            <console name="Wii U" prepend="wiu"/>
+            <console name="Wii" prepend="wii"/>
+            <console name="PS4" prepend="ps4"/>
+            <console name="PS3" prepend="ps3"/>
+        </consoles>
     </items>
 </configuration>
