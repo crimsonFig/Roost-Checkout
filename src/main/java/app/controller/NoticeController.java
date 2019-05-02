@@ -54,6 +54,8 @@ public class NoticeController extends TrayViewLifecycleStrategy {
             return observable;
         }));
         noticeListView.setItems(notices);     
+        
+        NoticeContainer.getInstance().createHourlyCountNotice();
     }
 
     @FXML

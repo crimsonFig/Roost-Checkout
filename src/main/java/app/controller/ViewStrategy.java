@@ -150,7 +150,8 @@ public abstract class ViewStrategy {
      * Constant for the dialog views. Describes the file path, and stage name.
      */
     public enum DIALOG_VIEWS implements DialogViewEnum {
-        CREATE_NOTICE("/view/createAlert.fxml");
+        CREATE_NOTICE("/view/createAlert.fxml"),
+    	REMOVE_NOTICE("/view/removeAlert.fxml");
 
         private String   path;
 

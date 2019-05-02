@@ -7,6 +7,8 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -28,6 +30,7 @@
                         <Menu mnemonicParsing="false" text="Alerts">
                             <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleCreateNoticeAction" text="Create" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteNoticeAction" text="Delete" />                   
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Inventory">
@@ -39,11 +42,20 @@
                 </MenuBar>
                 <VBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
                     <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="&lt;Logo&gt; Roost Checkout" textAlignment="CENTER" VBox.vgrow="NEVER">
-                            <font>
-                                <Font size="40.0" />
-                            </font>
-                        </Label>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="/images/mainLogo.gif" />
+                           </image>
+                        </ImageView>
+                              <Label alignment="CENTER" contentDisplay="CENTER" text=" Roost Checkout" textAlignment="CENTER">
+                                  <font>
+                                      <Font size="40.0" />
+                                  </font>
+                              </Label>
+                     </children>
+                  </HBox>
                         <HBox alignment="CENTER">
                             <children>
                                 <Button id="menuButton" fx:id="checkInButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCheckInAction" text="Check In" HBox.hgrow="ALWAYS">

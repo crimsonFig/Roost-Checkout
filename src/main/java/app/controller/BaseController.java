@@ -50,6 +50,12 @@ public class BaseController {
     private void handleCreateNoticeAction() {
         ViewDirector.getViewDirector().handleDisplayingPopout(ViewStrategy.DIALOG_VIEWS.CREATE_NOTICE);
     }
+    
+    @FXML
+    private void handleDeleteNoticeAction() {
+        ViewDirector.getViewDirector().handleDisplayingPopout(ViewStrategy.DIALOG_VIEWS.REMOVE_NOTICE);
+
+    }
 
     @FXML
     private void handleQuitAction() {
