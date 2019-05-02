@@ -17,6 +17,13 @@
             </roles>
         </developer>
         <developer>
+            <name>Hugo Garza</name>
+            <id>HugoGarza833</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
             <name>Maurice Velgis</name>
             <id>mauricevelgis</id>
             <roles>
