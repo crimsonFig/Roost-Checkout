@@ -22,7 +22,7 @@ public class CreateAlertController implements ViewLifecycleStrategy {
     @FXML private Button    createNoticeButton;
     @FXML private TextArea  descTextArea;
     @FXML private TextField timeField;
-
+    
     @FXML
     void handleCreateNoticeAction() {
 
@@ -34,7 +34,6 @@ public class CreateAlertController implements ViewLifecycleStrategy {
         }
 
         NoticeContainer.getInstance().createNotice(descTextArea.getText().trim(), noticeTime);
-
         closingBehavior();
     }
 

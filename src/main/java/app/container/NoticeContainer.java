@@ -2,10 +2,17 @@ package app.container;
 
 import app.controller.BaseController;
 import app.model.Notice;
+import app.model.NoticeTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +23,8 @@ import java.util.TimerTask;
  */
 public class NoticeContainer {
     private static NoticeContainer instance = null;
+    
+    private List<NoticeTask> noticeTaskList = new ArrayList<NoticeTask>();
 
     private final ObservableList<Notice> notices = FXCollections.observableArrayList();
     // todo: create a change listener handler
@@ -51,6 +60,10 @@ public class NoticeContainer {
     public ObservableList<Notice> getNotices() {
         return FXCollections.unmodifiableObservableList(notices);
     }
+    
+    public List<NoticeTask> getNoticeTaskList(){
+    	return noticeTaskList;
+    }
 
     /**
      * Convenience method for removing notices in bulk that match notices in the supplied collection.
@@ -81,32 +94,42 @@ public class NoticeContainer {
 
     }
     
-    public void createNotice(String noticeString, int time) {
+   /* public void createNotice(String noticeString, int time) {
  	
     	Timer timer = new Timer();
     	timer.schedule(new NoticeTask(timer, noticeString), time);
-    }
+    }*/
     
     public void createNotice(String noticeString, LocalTime time) {
     	Duration difference = Duration.between(LocalTime.now(), time);
     	
     	Timer timer = new Timer();
-    	timer.schedule(new NoticeTask(timer, noticeString), difference.toMillis());
+    	timer.schedule(new NoticeTask(timer, noticeString, time), difference.toMillis());
     }
     
-    class NoticeTask extends TimerTask {
-		
-		private Timer timer;
-		private String noticeString;
-		
-	    public NoticeTask(Timer timer, String noticeString) {
-	    	this.timer = timer;
-	    	this.noticeString = noticeString;
-		}
-
-		public void run() {	 
-		 createNotice(noticeString);	
-	      timer.cancel();
+    public void createHourlyCountNotice() {    	
+    	
+    	LocalTime start = LocalTime.now();
+	    // Hour + 1, set Minute and Second to 00
+	    LocalTime end = start.plusHours(1).truncatedTo(ChronoUnit.HOURS);
+	
+	    // Get Duration
+	    Duration duration = Duration.between(start, end);
+	    long millis = duration.toMillis();
+        
+	    int hour = end.getHour();
+	    String hourString;
+       
+	    if(hour >= 13) {
+    	   	hour = hour-12;
+       		hourString = hour + "PM";
+	    }else {
+    	   hourString = hour + "AM";
 	    }
-	  }
+
+       
+    	Timer timer = new Timer();
+    	timer.schedule(new NoticeTask(timer, "Do the hourly count for " + hourString, end), duration.toMillis());
+    }
+
 }
