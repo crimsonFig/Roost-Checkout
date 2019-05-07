@@ -91,7 +91,8 @@ public abstract class ViewStrategy {
         STYLES("/view/stylesheet.css"),
         ROOST_ICON("/images/roostIcon.jpg"),
         BELL("/images/bell.gif"),
-        BELL_ACTIVE("/images/bell_active.gif");
+        BELL_ACTIVE("/images/bell_active.gif"),
+        ITEM_CONFIG("/CONFIG/items.xml");
 
         private String path;
 
