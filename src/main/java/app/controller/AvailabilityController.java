@@ -23,8 +23,8 @@ public class AvailabilityController extends TrayViewLifecycleStrategy {
 
     @FXML
     private void initialize() {
-        tvStationsAvailability.setItems(StationContainer.getInstance().getWatchers());
-        tvEquipAvailability.setItems(EquipmentContainer.getInstance().getWatchers());
+        tvStationsAvailability.setItems(StationContainer.getInstance().getWatchers().sorted());
+        tvEquipAvailability.setItems(EquipmentContainer.getInstance().getWatchers().sorted());
         initAvailTable(tcStationName, tcStationAmount, tcStationAvailability);
         initAvailTable(tcEquipName, tcEquipAmount, tcEquipAvailability);
     }

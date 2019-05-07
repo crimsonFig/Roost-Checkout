@@ -1,6 +1,7 @@
 package app.container;
 
 import app.model.Requestable;
+import app.util.io.InventoryConfigAccessor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -178,6 +179,12 @@ public class AvailabilityWatcher {
 
     @Override
     public String toString() {
+        if (getName().contains("_")) {
+            int delimIndex = getName().indexOf(InventoryConfigAccessor.PREFIX_DELIM);
+            String prefix = "(" + getName().substring(0, delimIndex) + ") ";
+            String basic_name = getName().substring(delimIndex + 1);
+            return prefix + basic_name;
+        }
         return getName();
     }
 
