@@ -2,10 +2,13 @@ package app.container;
 
 import app.model.Equipment;
 import app.model.Requestable;
+import app.util.io.InventoryConfigAccessor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.stream.Collectors;
 
 /**
  * The station container works to provide an API for handling stations, so that all station manipulations are consistent
@@ -32,26 +35,16 @@ public class EquipmentContainer extends AvailabilityContainer {
      *
      * @implSpec Needs to create an independent and valid construction first and then apply relevant listeners.
      */
-    private static AvailabilityContainer initContainer() {
+    private static AvailabilityContainer initContainer(InventoryConfigAccessor ica) {
         EquipmentContainer container = new EquipmentContainer();
 
-        // todo: remove mock data and place into test instead
-        ObservableList<Requestable> smash = FXCollections.observableArrayList(Equipment.equipmentFactory("Smash"),
-                                                                              Equipment.equipmentFactory("Smash"),
-                                                                              Equipment.equipmentFactory("Smash"),
-                                                                              Equipment.equipmentFactory("Smash"),
-                                                                              Equipment.equipmentFactory("Smash"));
-        ObservableList<Requestable> stick = FXCollections.observableArrayList(Equipment.equipmentFactory("Pool Stick"),
-                                                                              Equipment.equipmentFactory("Pool Stick"));
-        ObservableList<Requestable> paddle = FXCollections.observableArrayList(Equipment.equipmentFactory("Paddle"),
-                                                                               Equipment.equipmentFactory("Paddle"),
-                                                                               Equipment.equipmentFactory("Paddle"));
-
-        AvailabilityWatcher smashW  = AvailabilityWatcher.initWatcher(smash, "Smash");
-        AvailabilityWatcher stickW  = AvailabilityWatcher.initWatcher(stick, "Pool Stick");
-        AvailabilityWatcher paddleW = AvailabilityWatcher.initWatcher(paddle, "Paddle");
-        container.getWatchers().addAll(smashW, stickW, paddleW);
-
+        container.getWatchers().addAll(ica.getEquipmentSet().stream().map(name -> {
+            ObservableList<Requestable> equipments = FXCollections.observableArrayList();
+            for (int i = 0; i < ica.getTotalMap().getOrDefault(name, 0); i++) {
+                equipments.add(Equipment.equipmentFactory(name));
+            }
+            return AvailabilityWatcher.initWatcher(equipments, name);
+        }).collect(Collectors.toList()));
         return container;
     }
 
@@ -64,7 +57,22 @@ public class EquipmentContainer extends AvailabilityContainer {
         if (instance == null) {
             synchronized (EquipmentContainer.class) {
                 if (instance == null) {
-                    instance = initContainer();
+                    instance = initContainer(new InventoryConfigAccessor());
+                }
+            }
+        }
+        return instance;
+    }
+
+    /**
+     * @param ica the inventory config accessor for initializing equipment with.
+     * @return a singleton instance of the container.
+     */
+    public static AvailabilityContainer getInstance(InventoryConfigAccessor ica) {
+        if (instance == null) {
+            synchronized (EquipmentContainer.class) {
+                if (instance == null) {
+                    instance = initContainer(ica);
                 }
             }
         }
