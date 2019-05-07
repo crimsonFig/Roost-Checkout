@@ -1,7 +1,8 @@
 package app;
 
 import app.container.*;
-import app.controller.*;
+import app.controller.ViewStrategy;
+import app.util.io.InventoryConfigAccessor;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class Main extends Application {
 
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-    public static Stage         mainStage;
+    public static        Stage  mainStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -23,13 +24,14 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         // instantiate the containers in the proper order.
-        StationContainer.getInstance();
-        EquipmentContainer.getInstance();
+        InventoryConfigAccessor ica = new InventoryConfigAccessor();
+        StationContainer.getInstance(ica);
+        EquipmentContainer.getInstance(ica);
         SessionContainer.getInstance();
         RequestContainer.getInstance();
         WaitlistContainer.getInstance();
 
-	    try {
+        try {
             //menu view, base
             BorderPane root = FXMLLoader.load(ViewStrategy.BASE_VIEWS.BASE.getViewURL());
             root.setCenter(FXMLLoader.load(ViewStrategy.BASE_VIEWS.HOME.getViewURL()));

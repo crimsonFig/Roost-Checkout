@@ -3,44 +3,44 @@
     <items>
         <stations>
             <station name="TV-1" total="1">
-                <consoles>
-                    <console name="Xbox One" prepend="xbx"/>
-                </consoles>
+                <consolables>
+                    <consolable name="Xbox One" prepend="xbx"/>
+                </consolables>
                 <equipables>
-                    <equipable name="HDMI Cords"/>
+                    <equipable name="HDMI Cord"/>
                 </equipables>
             </station>
             <station name="TV-2" total="1">
-                <consoles>
-                    <console name="Xbox One" prepend="xbx"/>
-                    <console name="Wii" prepend="wii"/>
-                    <console name="PS4" prepend="ps4"/>
-                    <console name="PS3" prepend="ps3"/>
-                </consoles>
+                <consolables>
+                    <consolable name="Xbox One" prepend="xbx"/>
+                    <consolable name="Wii" prepend="wii"/>
+                    <consolable name="PS4" prepend="ps4"/>
+                    <consolable name="PS3" prepend="ps3"/>
+                </consolables>
                 <equipables>
-                    <equipable name="HDMI Cords"/>
+                    <equipable name="HDMI Cord"/>
                 </equipables>
             </station>
             <station name="TV-3" total="1">
-                <consoles>
-                    <console name="Xbox One" prepend="xbx"/>
-                    <console name="Xbox 360" prepend="360"/>
-                    <console name="Wii U" prepend="wiu"/>
-                    <console name="Wii" prepend="wii"/>
-                </consoles>
+                <consolables>
+                    <consolable name="Xbox One" prepend="xbx"/>
+                    <consolable name="Xbox 360" prepend="360"/>
+                    <consolable name="Wii U" prepend="wiu"/>
+                    <consolable name="Wii" prepend="wii"/>
+                </consolables>
                 <equipables>
-                    <equipable name="HDMI Cords"/>
+                    <equipable name="HDMI Cord"/>
                 </equipables>
             </station>
             <station name="TV-4" total="1">
-                <consoles>
-                    <console name="Xbox 360" prepend="360"/>
-                    <console name="Wii U" prepend="wiu"/>
-                    <console name="Wii" prepend="wii"/>
-                    <console name="PS3" prepend="ps3"/>
-                </consoles>
+                <consolables>
+                    <consolable name="Xbox 360" prepend="360"/>
+                    <consolable name="Wii U" prepend="wiu"/>
+                    <consolable name="Wii" prepend="wii"/>
+                    <consolable name="PS3" prepend="ps3"/>
+                </consolables>
                 <equipables>
-                    <equipable name="HDMI Cords"/>
+                    <equipable name="HDMI Cord"/>
                 </equipables>
             </station>
 
@@ -51,7 +51,7 @@
             </station>
             <station name="FoosBall Table" total="1">
                 <equipables>
-                    <equipable name="FoosBall Ball"/>
+                    <equipable name="Foosball Ball"/>
                 </equipables>
             </station>
             <station name="PingPong Table" total="2">
@@ -81,7 +81,7 @@
             <equipment name="xbx_FIFA 18" total="1"/>
             <equipment name="xbx_FIFA 19" total="1"/>
             <equipment name="xbx_Forza Motorsport 5" total="1"/>
-            <equipment name="xbx_Gears of War 4" total=""/>
+            <equipment name="xbx_Gears of War 4" total="1"/>
             <equipment name="xbx_Gears of War Ultimate Edition" total="1"/>
             <equipment name="xbx_Halo The Master Chief Collection" total="1"/>
             <equipment name="xbx_Halo 5 Guardians" total="1"/>
@@ -208,7 +208,7 @@
 
             <equipment name="Paddle" total="13" />
             <equipment name="Puck" total="12" />
-            <equipment name="Foosball ball" total="25" />
+            <equipment name="Foosball Ball" total="25" />
             <equipment name="Stick" total="8" />
         </equipments>
 
